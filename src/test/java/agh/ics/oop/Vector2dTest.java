@@ -2,7 +2,7 @@ package agh.ics.oop;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Vector2dTest {
 
@@ -15,30 +15,30 @@ public class Vector2dTest {
     }
     @Test
     public void testEquals(){
-        assertEquals(new Vector2d(1,1).equals(new Vector2d(1,-1)),false);
-        assertEquals(new Vector2d(-2,-3).equals(new Vector2d(-2,-4)),false);
-        assertEquals(new Vector2d(-5,-7).equals(new Vector2d(-5,-7)),true);
-        assertEquals(new Vector2d(2,-3).equals(new Vector2d(2,-3)),true);
+        assertNotEquals(new Vector2d(1, 1), new Vector2d(1, -1));
+        assertNotEquals(new Vector2d(-2, -3), new Vector2d(-2, -4));
+        assertNotEquals(new Vector2d(-5,-7).equals(new Vector2d(-5,-7)),true);
+        assertNotEquals(new Vector2d(2,-3).equals(new Vector2d(2,-3)),true);
     }
     @Test
     public void testPreceds(){
         Vector2d compareVector = new Vector2d(2,3);
-        assertEquals(compareVector.precedes(new Vector2d(3,3)),true);
-        assertEquals(compareVector.precedes(new Vector2d(0,3)),false);
-        assertEquals(compareVector.precedes(new Vector2d(0,0)),false);
-        assertEquals(compareVector.precedes(new Vector2d(2,0)),false);
-        assertEquals(compareVector.precedes(new Vector2d(2,4)),true);
-        assertEquals(compareVector.precedes(new Vector2d(-4,-4)),false);
+        assertTrue(compareVector.precedes(new Vector2d(3, 3)));
+        assertFalse(compareVector.precedes(new Vector2d(0, 3)));
+        assertFalse(compareVector.precedes(new Vector2d(0, 0)));
+        assertFalse(compareVector.precedes(new Vector2d(2, 0)));
+        assertTrue(compareVector.precedes(new Vector2d(2, 4)));
+        assertFalse(compareVector.precedes(new Vector2d(-4, -4)));
     }
     @Test
     public void testFollows(){
         Vector2d compareVector = new Vector2d(2,3);
-        assertEquals(compareVector.follows(new Vector2d(3,3)),false);
-        assertEquals(compareVector.follows(new Vector2d(0,3)),true);
-        assertEquals(compareVector.follows(new Vector2d(0,0)),true);
-        assertEquals(compareVector.follows(new Vector2d(2,0)),true);
-        assertEquals(compareVector.follows(new Vector2d(2,4)),false);
-        assertEquals(compareVector.follows(new Vector2d(-4,-4)),true);
+        assertFalse(compareVector.follows(new Vector2d(3, 3)));
+        assertTrue(compareVector.follows(new Vector2d(0, 3)));
+        assertTrue(compareVector.follows(new Vector2d(0, 0)));
+        assertTrue(compareVector.follows(new Vector2d(2, 0)));
+        assertFalse(compareVector.follows(new Vector2d(2, 4)));
+        assertTrue(compareVector.follows(new Vector2d(-4, -4)));
     }
     @Test
     public void testUpperRight(){
@@ -65,10 +65,10 @@ public class Vector2dTest {
     }
     @Test
     public void testSubstract(){
-        assertEquals(new Vector2d(1,1).substract(new Vector2d(-1,-1)),new Vector2d(2,2));
-        assertEquals(new Vector2d(2,3).substract(new Vector2d(2,3)),new Vector2d(0,0));
-        assertEquals(new Vector2d(3,5).substract(new Vector2d(-2,1)),new Vector2d(5,4));
-        assertEquals(new Vector2d(2,4).substract(new Vector2d(4,2)),new Vector2d(-2,2));
+        assertEquals(new Vector2d(1,1).subtract(new Vector2d(-1,-1)),new Vector2d(2,2));
+        assertEquals(new Vector2d(2,3).subtract(new Vector2d(2,3)),new Vector2d(0,0));
+        assertEquals(new Vector2d(3,5).subtract(new Vector2d(-2,1)),new Vector2d(5,4));
+        assertEquals(new Vector2d(2,4).subtract(new Vector2d(4,2)),new Vector2d(-2,2));
     }
     @Test
     public void testOpposite(){

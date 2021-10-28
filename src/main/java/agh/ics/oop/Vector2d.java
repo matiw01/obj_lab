@@ -30,7 +30,7 @@ public class Vector2d {
         int newY = this.y+other.y;
         return (new Vector2d(newX,newY));
     }
-    public Vector2d substract(Vector2d other){
+    public Vector2d subtract(Vector2d other){
         int newX = this.x-other.x;
         int newY = this.y-other.y;
         return (new Vector2d(newX,newY));

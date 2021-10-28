@@ -5,15 +5,13 @@ public enum MapDirection {
     EAST,
     SOUTH,
     WEST;
-
+    private final static MapDirection[] mapDirections = values();
     public MapDirection next() {
-        MapDirection[] mapDirections = values();
         int direcionNumber = this.ordinal() + 1;
         return mapDirections[direcionNumber % mapDirections.length];
     }
 
     public MapDirection previous() {
-        MapDirection[] mapDirections = values();
         int direcionNumber = this.ordinal() - 1;
         if(direcionNumber < 0){direcionNumber = direcionNumber+mapDirections.length;}
         return mapDirections[direcionNumber];
@@ -27,4 +25,5 @@ public enum MapDirection {
             case WEST -> new Vector2d(0, -1);
         };
     }
+//    public String toString(){return ""+mapDirections[ordinal()];}
 }
