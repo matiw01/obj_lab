@@ -28,4 +28,9 @@ public class Animal {
             this.position = newPosition;
         }
     }
+    public boolean isAt(Vector2d position){return this.position.equals(position);}
+    public Vector2d getPosition() {
+        return this.position;
+    }
+    public MapDirection getDirection(){return this.direction;}
 }

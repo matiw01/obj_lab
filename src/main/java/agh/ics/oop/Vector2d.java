@@ -2,6 +2,8 @@ package agh.ics.oop;
 
 import com.sun.source.tree.BreakTree;
 
+import java.util.Objects;
+
 public class Vector2d {
     public final int x;
     public final int y;
@@ -40,6 +42,10 @@ public class Vector2d {
         if (this == other){return true;}
         if (!(other instanceof Vector2d vector)){return false;}
         return (this.x == vector.x && this.y == vector.y);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
     public Vector2d opposite(){
         return (new Vector2d(-1*this.x,-1*this.y));
