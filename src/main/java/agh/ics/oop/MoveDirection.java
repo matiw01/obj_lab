@@ -4,5 +4,8 @@ public enum MoveDirection {
     FORWARD,
     BACKWARD,
     RIGHT,
-    LEFT
+    LEFT;
+    public String toString(){
+        return this.name();
+    }
 }

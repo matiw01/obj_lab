@@ -27,4 +27,5 @@ public enum MapDirection {
             case WEST -> new Vector2d(-1, 0);
         };
     }
+    public String toString(){return this.name();}
 }
