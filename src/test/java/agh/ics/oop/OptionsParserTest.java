@@ -14,7 +14,7 @@ public class OptionsParserTest {
     private final String[] stringDirections4 = new String[]{"r","f","f","l","f","f"};
     private final OptionsParser parser = new OptionsParser();
     private Animal doSteps(String[] stringDirections){
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(4,4),new Vector2d(2,2));
         MoveDirection[] moveDirections = parser.parse(stringDirections);
         for (MoveDirection direction : moveDirections) {
             animal.move(direction);
@@ -30,7 +30,7 @@ public class OptionsParserTest {
     }
     @Test
     public void directionAfterMoveTest(){
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(4,4),new Vector2d(2,2));
         animal.move(MoveDirection.RIGHT);
         assertEquals(animal.getDirection(),MapDirection.EAST);
         animal.move(MoveDirection.FORWARD);
@@ -44,7 +44,7 @@ public class OptionsParserTest {
     }
     @Test
     public void positionAfterMoveTest(){
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(4,4),new Vector2d(2,2));
         animal.move(MoveDirection.RIGHT);
         assertEquals(animal.getPosition(),new Vector2d(3,2));
         animal.move(MoveDirection.FORWARD);
