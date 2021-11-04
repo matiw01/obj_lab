@@ -6,20 +6,27 @@ public class RectangularMap implements IWorldMap{
     private final int width;
     private final int height;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
+    private final Vector2d lowerLeft;
+    private final Vector2d upperRight;
     public RectangularMap(int width,int height){
         this.width = width;
         this.height = height;
+        this.lowerLeft = new Vector2d(0,0);
+        this.upperRight = new Vector2d(this.width,this.height);
     }
-    public ArrayList<Animal> getAnimalsList(){return this.animalsList;}
-    public void addAnimal(Animal animal){animalsList.add(animal);}
+//    public ArrayList<Animal> getAnimalsList(){return this.animalsList;}
     public String toString(){
         MapVisualizer mapVisualizer = new MapVisualizer(this);
-        Vector2d lowerLeft = new Vector2d(0,0);
-        Vector2d upperRight = new Vector2d(this.getWidth(),this.getHeight());
-        return mapVisualizer.draw(lowerLeft,upperRight);
+        return mapVisualizer.draw(new Vector2d(0,0),new Vector2d(this.width-1,this.height-1));
     }
     @Override
     public boolean canMoveTo(Vector2d position) {
+//        if(position.y<=this.height && position.x <= this.width && position.x>=0 && position.y>=0){
+//            return false;
+//        }
+        if (position.follows(this.lowerLeft) && position.precedes(this.upperRight)){
+            return false;
+        }
         for (Animal placedAnimal : animalsList){
             if (placedAnimal.getPosition().equals(position)){
                 return false;
@@ -30,7 +37,7 @@ public class RectangularMap implements IWorldMap{
     @Override
     public boolean place(Animal animal) {
         if (canMoveTo(animal.getPosition())){
-        addAnimal(animal);
+            animalsList.add(animal);
         return true;
         }
         else return false;
@@ -53,8 +60,8 @@ public class RectangularMap implements IWorldMap{
         }
         return null;
     }
-    @Override
-    public int getWidth(){return this.width;}
-    @Override
-    public int getHeight(){return this.height;}
+//    @Override
+//    public int getWidth(){return this.width;}
+//    @Override
+//    public int getHeight(){return this.height;}
 }

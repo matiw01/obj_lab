@@ -28,7 +28,7 @@ public class Animal {
     public void go(MapDirection direction){
         Vector2d moveVector = direction.toUnitVector();
         Vector2d newPosition = this.position.add(moveVector);
-        if(newPosition.x<= map.getWidth() && newPosition.x>=0 && newPosition.y<= map.getHeight() && newPosition.y>= 0 && map.canMoveTo(newPosition)){
+        if(map.canMoveTo(newPosition)){
             this.position = newPosition;
         }
     }
@@ -37,5 +37,5 @@ public class Animal {
         return this.position;
     }
     public MapDirection getDirection(){return this.direction;}
-    public String toString(){return this.getDirection().toString();}
+    public String toString(){return this.getDirection().toString() + " " + position.toString();}
 }

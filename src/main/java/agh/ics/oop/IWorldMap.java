@@ -1,14 +1,14 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 public interface IWorldMap {
-    int width = 0;
-    int height = 0;
-    ArrayList<Animal> animalsList = new ArrayList<Animal>();
-    int getWidth();
-    int getHeight();
-    ArrayList<Animal> getAnimalsList();
+//    int width = 0;
+//    int height = 0;
+//    ArrayList<Animal> animalsList = new ArrayList<Animal>();
+//    int getWidth();
+//    int getHeight();
+//    ArrayList<Animal> getAnimalsList();
     /**
      * Indicate if any object can move to the given position.
      *
