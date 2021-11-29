@@ -4,11 +4,11 @@ package agh.ics.oop;
 import java.util.ArrayList;
 
 public class SimulationEngine implements IEngine {
-    private final MoveDirection[] moves;
+    private final ArrayList<MoveDirection> moves;
     private final IWorldMap map;
     int animalsLen;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
-    public SimulationEngine(MoveDirection[] moves, IWorldMap map, Vector2d[] animalStartPositions){
+    public SimulationEngine(ArrayList<MoveDirection> moves, IWorldMap map, Vector2d[] animalStartPositions){
         this.moves = moves;
         this.map = map;
         this.animalsLen = animalStartPositions.length;
@@ -21,10 +21,10 @@ public class SimulationEngine implements IEngine {
 
     @Override
     public void run(){
-        int movesLen = moves.length;
+        int movesLen = moves.size();
         for(int i = 0; i < movesLen; i++){
             Animal animal = animalsList.get(i%animalsLen);
-            animal.move(moves[i]);
+            animal.move(moves.get(i));
             System.out.println(map);
         }
     }

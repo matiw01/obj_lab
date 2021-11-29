@@ -31,7 +31,7 @@ abstract class AbstractWorldMap implements IWorldMap{
             lowerLeft = lowerLeft.lowerLeft(animal.getPosition());
             return true;
         }
-        else return false;
+        else throw new IllegalArgumentException("position " + animal.getPosition() + " is already taken");
     }
 
     public Object objectAt(Vector2d position) {

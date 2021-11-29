@@ -4,6 +4,8 @@ package agh.ics.oop;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import java.util.ArrayList;
 import java.util.SplittableRandom;
 
 
@@ -15,8 +17,8 @@ public class OptionsParserTest {
     private final OptionsParser parser = new OptionsParser();
     private Animal doSteps(String[] stringDirections){
         Animal animal = new Animal(new RectangularMap(4,4),new Vector2d(2,2));
-        MoveDirection[] moveDirections = parser.parse(stringDirections);
-        for (MoveDirection direction : moveDirections) {
+        ArrayList<MoveDirection> moveDirections = parser.parse(stringDirections);
+        for (MoveDirection direction : moveDirections){
             animal.move(direction);
         }
         return animal;

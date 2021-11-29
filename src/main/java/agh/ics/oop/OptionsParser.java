@@ -1,10 +1,13 @@
 package agh.ics.oop;
 
 
+import java.util.ArrayList;
+
 public class OptionsParser {
-    public MoveDirection[] parse(String[] stringDirections){
+    public ArrayList<MoveDirection> parse(String[] stringDirections){
         int inputLen = stringDirections.length;
-        MoveDirection[] moveDirections = new MoveDirection[inputLen];
+//        MoveDirection[] moveDirections = new MoveDirection[inputLen];
+        ArrayList<MoveDirection> moveDirections = new ArrayList<MoveDirection>();
         int j = 0;
         for (String stringDirection : stringDirections) {
             MoveDirection direction = switch (stringDirection) {
@@ -12,19 +15,10 @@ public class OptionsParser {
                 case "b", "backward" -> MoveDirection.BACKWARD;
                 case "r", "right" -> MoveDirection.RIGHT;
                 case "l", "left" -> MoveDirection.LEFT;
-                default -> null;
+                default -> throw new IllegalArgumentException(stringDirection + " is an illegal argument");
             };
-            moveDirections[j] = direction;
-            if (direction != null) {
-                j++;
-            }
+            moveDirections.add(direction);
         }
-        MoveDirection[] resultMoveDirections = new MoveDirection[j];
-        for(int i = 0; i<j; i++){
-            if(moveDirections[i] != null){
-                resultMoveDirections[i] = moveDirections[i];
-            }
-        }
-        return resultMoveDirections;
+        return moveDirections;
     }
 }
