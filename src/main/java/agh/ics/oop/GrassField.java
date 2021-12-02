@@ -39,7 +39,6 @@ public class GrassField extends AbstractWorldMap implements IWorldMap, IPosition
     }
     public Vector2d[] getCorrners(){
         Vector2d[] vectors = new Vector2d[] {lowerLeft.lowerLeft(mapBoundarys.getLowerLeft()),upperRight.upperRight(mapBoundarys.getUpperRight())};
-        System.out.println(Arrays.toString(vectors));
         return vectors;
     }
     @Override
@@ -49,9 +48,9 @@ public class GrassField extends AbstractWorldMap implements IWorldMap, IPosition
     @Override
     public boolean place(Animal animal) {
         if (canMoveTo(animal.getPosition())){
-            animalsList.add(animal);
             animalsHashMap.put(animal.getPosition(),animal);
             mapBoundarys.addAnimal(animal);
+            animal.addObserver(mapBoundarys);
             return true;
         }
         else throw new IllegalArgumentException("position " + animal.getPosition() + " is not available");
