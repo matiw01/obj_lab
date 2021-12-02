@@ -1,9 +1,13 @@
 package agh.ics.oop;
 import java.lang.Math;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GrassField extends AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
+    private final MapBoundary mapBoundarys;
     public GrassField(int grasNum){
+        mapBoundarys = new MapBoundary();
         lowerLeft = new Vector2d((int)Math.floor(Math.sqrt(10*grasNum)),(int)Math.floor(Math.sqrt(10*grasNum)));
         upperRight = new Vector2d(0,0);
         int howManyMore = grasNum;
@@ -34,11 +38,22 @@ public class GrassField extends AbstractWorldMap implements IWorldMap, IPosition
         }
     }
     public Vector2d[] getCorrners(){
-        return new Vector2d[]{lowerLeft, upperRight};
+        Vector2d[] vectors = new Vector2d[] {lowerLeft.lowerLeft(mapBoundarys.getLowerLeft()),upperRight.upperRight(mapBoundarys.getUpperRight())};
+        System.out.println(Arrays.toString(vectors));
+        return vectors;
     }
     @Override
     public boolean canMoveTo(Vector2d position) {
         return !animalsHashMap.containsKey(position);
     }
-
+    @Override
+    public boolean place(Animal animal) {
+        if (canMoveTo(animal.getPosition())){
+            animalsList.add(animal);
+            animalsHashMap.put(animal.getPosition(),animal);
+            mapBoundarys.addAnimal(animal);
+            return true;
+        }
+        else throw new IllegalArgumentException("position " + animal.getPosition() + " is not available");
+    }
 }

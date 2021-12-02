@@ -42,7 +42,9 @@ public class Animal implements IMapElement{
     public boolean isAt(Vector2d position){return this.position.equals(position);}
     public Vector2d getPosition() {return this.position;}
     public MapDirection getDirection(){return this.direction;}
-    public String toString(){return this.getDirection().toString();}
+//    public String toString(){return this.getDirection().toString();}
+    public String toString(){return ""+getDirection();}
     void addObserver(IPositionChangedObserver observer){observers.add(observer);}
     void removeObserver(IPositionChangedObserver observer){observers.remove(observer);}
+
 }

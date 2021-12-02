@@ -37,9 +37,12 @@ public class RectangularMapTest {
         map.place(new Animal(map,new Vector2d(3,4)));
         map.place(new Animal(map,new Vector2d(7,2)));
         assertTrue(map.place(new Animal(map,new Vector2d(2, 1))));
-        assertFalse(map.place(new Animal(map, new Vector2d(10,10))));
-        assertFalse(map.place(new Animal(map, new Vector2d(3,4))));
-        assertFalse(map.place(new Animal(map, new Vector2d(7,2))));
+        Exception ex1 = assertThrows(IllegalArgumentException.class,() -> {map.place(new Animal(map, new Vector2d(10,10)));});
+        assertEquals("position (10,10) is not available", ex1.getMessage());
+        Exception ex2 = assertThrows(IllegalArgumentException.class,() -> {map.place(new Animal(map, new Vector2d(3,4)));});
+        assertEquals("position (3,4) is not available", ex2.getMessage());
+        Exception ex3 = assertThrows(IllegalArgumentException.class,() -> {map.place(new Animal(map, new Vector2d(7,2)));});
+        assertEquals("position (7,2) is not available", ex3.getMessage());
     }
     @Test
     public void isOccupiedTest(){

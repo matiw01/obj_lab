@@ -13,6 +13,8 @@ abstract class AbstractWorldMap implements IWorldMap{
     public String toString(){
         MapVisualizer mapVisualizer = new MapVisualizer(this);
         Vector2d[] verticies = getCorrners();
+        System.out.println(verticies[0]);
+        System.out.println(verticies[1]);
         return mapVisualizer.draw(verticies[0],verticies[1]);
     }
 
@@ -31,7 +33,7 @@ abstract class AbstractWorldMap implements IWorldMap{
             lowerLeft = lowerLeft.lowerLeft(animal.getPosition());
             return true;
         }
-        else throw new IllegalArgumentException("position " + animal.getPosition() + " is already taken");
+        else throw new IllegalArgumentException("position " + animal.getPosition() + " is not available");
     }
 
     public Object objectAt(Vector2d position) {
@@ -48,8 +50,6 @@ abstract class AbstractWorldMap implements IWorldMap{
         Animal animal = animalsHashMap.get(oldPosition);
         animalsHashMap.remove(oldPosition);
         animalsHashMap.put(newPosition,animal);
-        upperRight = upperRight.upperRight(newPosition);
-        lowerLeft = lowerLeft.lowerLeft(newPosition);
     }
 
 }

@@ -2,11 +2,11 @@ package agh.ics.oop;
 
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.ArrayList;
-import java.util.SplittableRandom;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class OptionsParserTest {
@@ -25,10 +25,13 @@ public class OptionsParserTest {
     }
     @Test
     public void parseTest(){
-        assertArrayEquals(parser.parse(stringDirections1), new MoveDirection[] {MoveDirection.FORWARD,MoveDirection.BACKWARD});
-        assertArrayEquals(parser.parse(stringDirections2), new MoveDirection[] {MoveDirection.FORWARD,MoveDirection.RIGHT,MoveDirection.BACKWARD});
-        assertArrayEquals(parser.parse(stringDirections3), new MoveDirection[] {MoveDirection.RIGHT,MoveDirection.LEFT,MoveDirection.LEFT});
-        assertArrayEquals(parser.parse(stringDirections4), new MoveDirection[] {MoveDirection.RIGHT,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.LEFT,MoveDirection.FORWARD,MoveDirection.FORWARD});
+        Exception ex1 = assertThrows(IllegalArgumentException.class, () -> {parser.parse(stringDirections1);});
+        assertEquals("c is an illegal argument", ex1.getMessage());
+        Exception ex2 = assertThrows(IllegalArgumentException.class, () -> {parser.parse(stringDirections2);});
+        assertEquals("jsbj is an illegal argument", ex2.getMessage());
+        Exception ex3 = assertThrows(IllegalArgumentException.class, () -> {parser.parse(stringDirections3);});
+        assertEquals("sjfjfb is an illegal argument", ex3.getMessage());
+        assertEquals(Arrays.asList(MoveDirection.RIGHT,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.LEFT,MoveDirection.FORWARD,MoveDirection.FORWARD),parser.parse(stringDirections4));
     }
     @Test
     public void directionAfterMoveTest(){
@@ -50,24 +53,18 @@ public class OptionsParserTest {
         animal.move(MoveDirection.RIGHT);
         assertEquals(animal.getPosition(),new Vector2d(3,2));
         animal.move(MoveDirection.FORWARD);
-        assertEquals(animal.getPosition(),new Vector2d(4,2));
-        animal.move(MoveDirection.BACKWARD);
         assertEquals(animal.getPosition(),new Vector2d(3,2));
+        animal.move(MoveDirection.BACKWARD);
+        assertEquals(animal.getPosition(),new Vector2d(2,2));
         animal.move(MoveDirection.RIGHT);
-        assertEquals(animal.getPosition(),new Vector2d(3,1));
+        assertEquals(animal.getPosition(),new Vector2d(2,1));
         animal.move(MoveDirection.LEFT);
-        assertEquals(animal.getPosition(),new Vector2d(4,1));
+        assertEquals(animal.getPosition(),new Vector2d(3,1));
     }
     @Test
     public void integrateTest(){
-        Animal animal1 = doSteps(stringDirections1);
-        assertEquals(animal1.getPosition(),new Vector2d(2,2));
-        Animal animal2 = doSteps(stringDirections2);
-        assertEquals(animal2.getPosition(),new Vector2d(2,3));
-        Animal animal3 = doSteps(stringDirections3);
-        assertEquals(animal3.getPosition(),new Vector2d(2,3));
         Animal animal4 = doSteps(stringDirections4);
-        assertEquals(animal4.getPosition(), new Vector2d(4,4));
+        assertEquals( new Vector2d(3,3),animal4.getPosition());
 
     }
 }

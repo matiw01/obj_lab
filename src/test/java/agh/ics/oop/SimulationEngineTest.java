@@ -20,7 +20,7 @@ public class SimulationEngineTest {
     @Test
     public void RunTest2(){
         GrassField grassField = new GrassField(10);
-        {MoveDirection.BACKWARD,MoveDirection.FORWARD,MoveDirection.RIGHT,MoveDirection.BACKWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.BACKWARD,MoveDirection.FORWARD,MoveDirection.FORWARD};
+//        {MoveDirection.BACKWARD,MoveDirection.FORWARD,MoveDirection.RIGHT,MoveDirection.BACKWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.BACKWARD,MoveDirection.FORWARD,MoveDirection.FORWARD};
         ArrayList<MoveDirection> moveDirections = new ArrayList<MoveDirection>();
         moveDirections.add(MoveDirection.BACKWARD);moveDirections.add(MoveDirection.FORWARD);moveDirections.add(MoveDirection.RIGHT);moveDirections.add(MoveDirection.BACKWARD);moveDirections.add(MoveDirection.FORWARD);moveDirections.add(MoveDirection.FORWARD);moveDirections.add(MoveDirection.BACKWARD);;moveDirections.add(MoveDirection.FORWARD);moveDirections.add(MoveDirection.FORWARD);
         Vector2d[] anmialsStartingPos = {new Vector2d(-1,-1),new Vector2d(9,8),new Vector2d(9,9)};
