@@ -2,9 +2,13 @@ package agh.ics.oop;
 
 public enum MoveDirection {
     FORWARD,
-    BACKWARD,
+    FOWARD_RIGHT,
     RIGHT,
-    LEFT;
+    BACKWARD_RIGHT,
+    BACKWARD,
+    BACKWAD_LEFT,
+    LEFT,
+    FORWARD_LEFT;
     public String toString(){
         return this.name();
     }

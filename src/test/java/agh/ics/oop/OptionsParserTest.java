@@ -41,25 +41,25 @@ public class OptionsParserTest {
         animal.move(MoveDirection.FORWARD);
         assertEquals(animal.getDirection(),MapDirection.EAST);
         animal.move(MoveDirection.BACKWARD);
-        assertEquals(animal.getDirection(),MapDirection.EAST);
+        assertEquals(animal.getDirection(),MapDirection.WEST);
         animal.move(MoveDirection.RIGHT);
-        assertEquals(animal.getDirection(),MapDirection.SOUTH);
-        animal.move(MoveDirection.LEFT);
-        assertEquals(animal.getDirection(),MapDirection.EAST);
+        assertEquals(animal.getDirection(),MapDirection.NORTH);
+        animal.move(MoveDirection.FORWARD_LEFT);
+        assertEquals(animal.getDirection(),MapDirection.NORTH_WEST);
     }
     @Test
     public void positionAfterMoveTest(){
         Animal animal = new Animal(new RectangularMap(4,4),new Vector2d(2,2));
         animal.move(MoveDirection.RIGHT);
-        assertEquals(animal.getPosition(),new Vector2d(3,2));
+        assertEquals(new Vector2d(2,2), animal.getPosition());
         animal.move(MoveDirection.FORWARD);
-        assertEquals(animal.getPosition(),new Vector2d(3,2));
+        assertEquals(new Vector2d(3,2), animal.getPosition());
         animal.move(MoveDirection.BACKWARD);
-        assertEquals(animal.getPosition(),new Vector2d(2,2));
+        assertEquals(new Vector2d(3,2), animal.getPosition());
         animal.move(MoveDirection.RIGHT);
-        assertEquals(animal.getPosition(),new Vector2d(2,1));
-        animal.move(MoveDirection.LEFT);
-        assertEquals(animal.getPosition(),new Vector2d(3,1));
+        assertEquals(new Vector2d(3,2), animal.getPosition());
+        animal.move(MoveDirection.FORWARD);
+        assertEquals(new Vector2d(3,3), animal.getPosition());
     }
     @Test
     public void integrateTest(){

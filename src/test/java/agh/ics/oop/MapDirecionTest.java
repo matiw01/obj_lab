@@ -8,17 +8,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MapDirecionTest {
     @Test
     public void testNext() {
-        assertEquals(MapDirection.WEST.next(), MapDirection.NORTH);
-        assertEquals(MapDirection.NORTH.next(), MapDirection.EAST);
-        assertEquals(MapDirection.EAST.next(), MapDirection.SOUTH);
-        assertEquals(MapDirection.SOUTH.next(), MapDirection.WEST);
+        assertEquals(MapDirection.WEST.changeDirection(1), MapDirection.NORTH_WEST);
+        assertEquals(MapDirection.NORTH.changeDirection(2), MapDirection.EAST);
+        assertEquals(MapDirection.EAST.changeDirection(3), MapDirection.SOUTH_WEST);
+        assertEquals(MapDirection.SOUTH.changeDirection(4), MapDirection.NORTH);
+        assertEquals(MapDirection.NORTH_WEST.changeDirection(5),MapDirection.SOUTH);
     }
     @Test
     public void testPrevious() {
-        assertEquals(MapDirection.WEST.previous(), MapDirection.SOUTH);
-        assertEquals(MapDirection.NORTH.previous(), MapDirection.WEST);
-        assertEquals(MapDirection.EAST.previous(), MapDirection.NORTH);
-        assertEquals(MapDirection.SOUTH.previous(), MapDirection.EAST);
+        assertEquals(MapDirection.WEST.previous(), MapDirection.SOUTH_WEST);
+        assertEquals(MapDirection.NORTH.previous(), MapDirection.NORTH_WEST);
+        assertEquals(MapDirection.EAST.previous(), MapDirection.NORTH_EAST);
+        assertEquals(MapDirection.SOUTH.previous(), MapDirection.SOUTH_EAST);
     }
 
 }
