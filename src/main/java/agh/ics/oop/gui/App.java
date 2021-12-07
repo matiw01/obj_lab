@@ -2,6 +2,7 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -41,7 +42,7 @@ public class App extends Application {
         FlowPane pane = new FlowPane(Orientation.VERTICAL);
         pane.setHgap(5);
         pane.setAlignment(Pos.CENTER);
-        pane.setPadding(new Insets(0,0,0,0)); // set top, right, bottom, left
+        pane.setPadding(new Insets(0, 0, 0, 0)); // set top, right, bottom, left
         // this allows input fields to be placed in the window
 
         TextField tf1 = new TextField("50");
@@ -86,7 +87,7 @@ public class App extends Application {
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(pane);
         borderPane.setBottom(vBox);
-        BorderPane.setAlignment(vBox,Pos.CENTER);
+        BorderPane.setAlignment(vBox, Pos.CENTER);
 
         Scene scene = new Scene(borderPane, 500, 500);
         primaryStage.setTitle("Getting Started");
@@ -102,14 +103,13 @@ public class App extends Application {
             startEnergy = Integer.valueOf(tf5.getText());
             moveEnergy = Integer.valueOf(tf6.getText());
             plantEnergy = Integer.valueOf(tf7.getText());
-            if (mapWidth == null || mapHeiht == null || jungleRatio == null || numberOfAnimals == null || startEnergy == null || plantEnergy == null||  moveEnergy == null ){
+            if (mapWidth == null || mapHeiht == null || jungleRatio == null || numberOfAnimals == null || startEnergy == null || plantEnergy == null || moveEnergy == null) {
                 throw new IllegalArgumentException("You have to put in all arguments");
             }
             primaryStage.close();
             try {
                 startSimulation();
-            }
-            catch (InterruptedException ex){
+            } catch (InterruptedException ex) {
                 System.out.println(ex.toString());
                 System.exit(0);
             }
@@ -117,6 +117,7 @@ public class App extends Application {
 
 
     }
+
     private void startSimulation() throws InterruptedException {
         Stage simulationStage = new Stage();
         map = new RectangularMap(mapWidth, mapHeiht);
@@ -125,20 +126,18 @@ public class App extends Application {
         lowerLeft = corrners[0];
         upperRight = corrners[1];
 
-
-//        Kod do dostosowania później
+        //zwierzęta nie reaguja
         GridCreator gridCreator = new GridCreator(map);
-        int i = 0;
-        while (i<10){
+
+        for (int i = 0; i<10; i++) {
             GridPane grid = gridCreator.createGrid();
             Scene scene = new Scene(grid, 400, 400);
             simulationStage.setScene(scene);
             simulationStage.show();
-            Thread.sleep(1000);
             engine.run();
+            Thread.sleep(1000);
             System.out.println(i);
-            i++;
         }
-    }
 
+    }
 }
