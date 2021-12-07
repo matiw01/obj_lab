@@ -3,12 +3,8 @@ package agh.ics.oop;
 //import java.util.ArrayList;
 
 public interface IWorldMap {
-//    int width = 0;
-//    int height = 0;
-//    ArrayList<Animal> animalsList = new ArrayList<Animal>();
-//    int getWidth();
-//    int getHeight();
-//    ArrayList<Animal> getAnimalsList();
+
+
     /**
      * Indicate if any object can move to the given position.
      *
@@ -46,4 +42,14 @@ public interface IWorldMap {
      * @return Object or null if the position is not occupied.
      */
     Object objectAt(Vector2d position);
+    public void removeDeadAnimals();
+    Vector2d[] getCorrners();
+    Integer getMapWidth();
+    Integer getMapHeight();
+    Integer getJungleRatio();
+    Integer getNumberOfAnimals();
+    Integer getStartEnergy();
+    Integer getMoveEnergy();
+    Integer getPlantEnergy();
 }
+

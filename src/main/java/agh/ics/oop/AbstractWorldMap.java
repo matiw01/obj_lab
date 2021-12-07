@@ -2,33 +2,35 @@ package agh.ics.oop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-abstract class AbstractWorldMap implements IWorldMap{
+abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     protected final ArrayList<Animal> animalsList = new ArrayList<Animal>();
-    protected final Map<Vector2d, Animal> animalsHashMap = new HashMap<>();
+    protected final Map<Vector2d, List<Animal>> animalsHashMap = new HashMap<>();
     protected final Map<Vector2d, Grass> grassHashMap = new HashMap<>();
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
-    public String toString(){
-        MapVisualizer mapVisualizer = new MapVisualizer(this);
-        Vector2d[] verticies = getCorrners();
-        System.out.println(verticies[0]);
-        System.out.println(verticies[1]);
-        return mapVisualizer.draw(verticies[0],verticies[1]);
-    }
+    private Integer mapWidth;
+    private Integer mapHeiht;
+    private Integer jungleRatio;
+    private Integer numberOfAnimals;
+    private Integer startEnergy;
+    private Integer moveEnergy;
+    private Integer plantEnergy;
 
-    protected abstract Vector2d[] getCorrners();
+
+    public abstract Vector2d[] getCorrners();
     protected Vector2d getAnimalInListPos(int n){return animalsList.get(n).getPosition();}
 
     public boolean isOccupied(Vector2d position) {
-        return animalsHashMap.containsKey(position) || grassHashMap.containsKey(position);
+        return (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size() > 0) || grassHashMap.containsKey(position);
     }
 
     public boolean place(Animal animal) {
         if (canMoveTo(animal.getPosition())){
             animalsList.add(animal);
-            animalsHashMap.put(animal.getPosition(),animal);
+            animalsHashMap.get(animal.getPosition()).add(animal);
             upperRight = upperRight.upperRight(animal.getPosition());
             lowerLeft = lowerLeft.lowerLeft(animal.getPosition());
             return true;
@@ -38,7 +40,14 @@ abstract class AbstractWorldMap implements IWorldMap{
 
     public Object objectAt(Vector2d position) {
         if (animalsHashMap.containsKey(position)){
-            return animalsHashMap.get(position);
+            List<Animal> animalsList = animalsHashMap.get(position);
+            Animal strongestAnimal = animalsList.get(0);
+            for (Animal animal : animalsList){
+                if (strongestAnimal.getEnergy() > animal.getEnergy()){
+                    strongestAnimal = animal;
+                }
+            }
+            return strongestAnimal;
         }
         if (grassHashMap.containsKey(position)){
             return grassHashMap.get(position);
@@ -46,10 +55,32 @@ abstract class AbstractWorldMap implements IWorldMap{
         return null;
     }
     //Observer method
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
-        Animal animal = animalsHashMap.get(oldPosition);
-        animalsHashMap.remove(oldPosition);
-        animalsHashMap.put(newPosition,animal);
+//    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+//        Animal animal = animalsHashMap.get(oldPosition);
+//        animalsHashMap.remove(oldPosition);
+//        animalsHashMap.put(newPosition,animal);
+//    }
+    public void removeDeadAnimals(){
+        for (int i = lowerLeft.x; i <= upperRight.x; i++){
+            for (int j = lowerLeft.y; j <= upperRight.y; j++){
+                if (animalsHashMap.containsKey(new Vector2d(i,j))){
+                    animalsHashMap.get(new Vector2d(i,j)).removeIf(animal -> !animal.isAlive());
+                }
+            }
+        }
     }
-
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
+        List<Animal> animalsOnPos = animalsHashMap.get(oldPosition);
+        animalsOnPos.remove(animal);
+        List<Animal> newAnimalsOnPos = animalsHashMap.get(newPosition);
+        newAnimalsOnPos.add(animal);
+    }
+    public Integer getMapWidth(){return this.mapWidth;}
+    public Integer getMapHeight(){return this.mapHeiht;}
+    public Integer getJungleRatio(){return this.jungleRatio;}
+    public Integer getNumberOfAnimals(){return this.numberOfAnimals;}
+    public Integer getStartEnergy(){return this.startEnergy;}
+    public Integer getMoveEnergy(){return this.moveEnergy;}
+    public Integer getPlantEnergy(){return this.plantEnergy;}
 }
