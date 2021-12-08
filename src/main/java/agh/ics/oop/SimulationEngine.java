@@ -40,6 +40,7 @@ public class SimulationEngine implements IEngine {
             animal.dieIfNoEnergy();
         }
     }
+
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
     private void removeDeadAnimals(){
         animalsList.removeIf(animal -> !animal.isAlive());

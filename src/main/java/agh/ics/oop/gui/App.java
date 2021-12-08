@@ -106,7 +106,7 @@ public class App extends Application {
             }
             primaryStage.close();
             try {
-                startSimulation();
+                Simulation();
             } catch (InterruptedException ex) {
                 System.out.println(ex.toString());
                 System.exit(0);
@@ -116,7 +116,7 @@ public class App extends Application {
 
     }
 
-    private void startSimulation() throws InterruptedException {
+    private void Simulation() throws InterruptedException {
         Stage simulationStage = new Stage();
         map = new RectangularMap(mapWidth, mapHeiht, 100, plantEnergy);
         engine = new SimulationEngine(map, numberOfAnimals, startEnergy, moveEnergy);

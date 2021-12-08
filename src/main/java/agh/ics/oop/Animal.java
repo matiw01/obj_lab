@@ -77,6 +77,7 @@ public class Animal implements IMapElement{
     public Vector2d getPosition() {return this.position;}
     public MapDirection getDirection(){return this.direction;}
     public Integer getEnergy(){return this.energy;}
+    public Integer getProcreateEnergy(){return this.procreareEnergy;}
     public boolean isAlive(){return this.alive;}
     public String toString(){return ""+getDirection();}
     void addObserver(IPositionChangedObserver observer){observers.add(observer);}
@@ -99,4 +100,9 @@ public class Animal implements IMapElement{
         }
         return newPosition;
     }
+//    to be continued
+//    public Animal procreate(Animal otherAnimal){
+//        List<Integer> newBornGentype =
+//        Animal newBorn = new Animal(this.map, this.position,);
+//    }
 }

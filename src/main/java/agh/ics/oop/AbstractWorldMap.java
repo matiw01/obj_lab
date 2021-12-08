@@ -46,14 +46,7 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
 
     public Object objectAt(Vector2d position) {
         if (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size()>0){
-            List<Animal> animalsList = animalsHashMap.get(position);
-            Animal strongestAnimal = animalsList.get(0);
-            for (Animal animal : animalsList){
-                if (strongestAnimal.getEnergy() > animal.getEnergy()){
-                    strongestAnimal = animal;
-                }
-            }
-            return strongestAnimal;
+            return getStrongestAnimal(position);
         }
         if (grassHashMap.containsKey(position)){
             return grassHashMap.get(position);
@@ -80,6 +73,28 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
 
     public void addGras(Grass grass){grassHashMap.put(grass.getPosition(), grass);}
     public void removeGrass(Vector2d position){grassHashMap.remove(position);};
+
+    public void animalsProcreate(){
+        for (int i = 0; i <= upperRight.x; i++){
+            for (int j = 0; j <= upperRight.y; j++){
+                if (animalsHashMap.get(new Vector2d(i,j)).size()>=2){
+                    Animal animal1 = getStrongestAnimal(new Vector2d(i,j));
+                    Animal animal2 = getStrongestAnimal(new Vector2d(i,j));
+                }
+            }
+        }
+    }
+
+    private Animal getStrongestAnimal(Vector2d position){
+        List<Animal> animalsList = animalsHashMap.get(position);
+        Animal strongestAnimal = animalsList.get(0);
+        for (Animal animal : animalsList){
+            if (strongestAnimal.getEnergy() > animal.getEnergy()){
+                strongestAnimal = animal;
+            }
+        }
+        return strongestAnimal;
+    }
 
     public Integer getMapWidth(){return this.mapWidth;}
     public Integer getMapHeight(){return this.mapHeiht;}
