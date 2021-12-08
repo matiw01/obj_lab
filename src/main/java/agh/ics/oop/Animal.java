@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Animal implements IMapElement{
+    Integer moveEnergy;
     private boolean alive;
     private int energy;
     private int procreareEnergy;
@@ -14,7 +15,8 @@ public class Animal implements IMapElement{
     private Vector2d position;
     private final IWorldMap map;
     private final ArrayList<IPositionChangedObserver> observers = new ArrayList<>();
-    public Animal(IWorldMap map,Vector2d initialPosition,List<Integer> genotype, int energy, int procreareEnergy){
+    public Animal(IWorldMap map,Vector2d initialPosition,List<Integer> genotype, int energy, int procreareEnergy, Integer moveEnergy){
+        this.moveEnergy = moveEnergy;
         this.alive = true;
         this.position = initialPosition;
         this.map = map;
@@ -32,6 +34,7 @@ public class Animal implements IMapElement{
     }
 
     public void move(){
+        this.energy -= moveEnergy;
         int gen = geontype.get((int) (Math.random() * 32));
         MoveDirection direction = MoveDirection.values()[gen];
         switch (direction){
@@ -59,6 +62,17 @@ public class Animal implements IMapElement{
             this.position = newPosition;
         }
     }
+    public void eat(){
+        if (map.isGrassy(position)){
+            map.removeGrass(position);
+            energy += map.getPlantEnergy();
+        }
+    }
+    public void dieIfNoEnergy(){
+        if (energy <= 0){
+            this.alive = false;
+        }
+    }
     public boolean isAt(Vector2d position){return this.position.equals(position);}
     public Vector2d getPosition() {return this.position;}
     public MapDirection getDirection(){return this.direction;}
@@ -74,7 +88,7 @@ public class Animal implements IMapElement{
                 newPosition = new Vector2d(0, newPosition.y);
             }
             if (newPosition.x < lowerLeft.x){
-                newPosition = new Vector2d(lowerLeft.x, newPosition.y);
+                newPosition = new Vector2d(upperRight.x, newPosition.y);
             }
             if (newPosition.y > upperRight.y){
                 newPosition = new Vector2d(newPosition.x, 0);

@@ -43,8 +43,8 @@ public class App extends Application {
         pane.setPadding(new Insets(0, 0, 0, 0)); // set top, right, bottom, left
         // this allows input fields to be placed in the window
 
-        TextField tf1 = new TextField("50");
-        TextField tf2 = new TextField("50");
+        TextField tf1 = new TextField("10");
+        TextField tf2 = new TextField("10");
         TextField tf3 = new TextField("10");
         TextField tf4 = new TextField("10");
         TextField tf5 = new TextField("50");
@@ -118,53 +118,20 @@ public class App extends Application {
 
     private void startSimulation() throws InterruptedException {
         Stage simulationStage = new Stage();
-        map = new RectangularMap(mapWidth, mapHeiht);
-        engine = new SimulationEngine(map, numberOfAnimals, startEnergy);
+        map = new RectangularMap(mapWidth, mapHeiht, 100, plantEnergy);
+        engine = new SimulationEngine(map, numberOfAnimals, startEnergy, moveEnergy);
         Vector2d[] corrners = map.getCorrners();
         lowerLeft = corrners[0];
         upperRight = corrners[1];
 
-        ToggleButton toggleButton = new ToggleButton("Start");
-        GridCreator gridCreator = new GridCreator(map);
+        GridPane grid = new GridPane();
         AtomicBoolean running = new AtomicBoolean();
+        GridCreator gridCreator = new GridCreator(map, grid, engine, running);
+        gridCreator.createGrid(true);
 
-        toggleButton.setOnAction(event -> {
-            running.set(toggleButton.isSelected());
-            System.out.println(running.get());
-            System.out.println("click");
-            try{
-                if( running.get()){
-                    Thread t = new Thread(() -> {
-                        while (running.get()) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                System.out.println(ex.toString());
-                            }
-
-                            Platform.runLater(() -> {
-                                System.out.println("dziejesie");
-                                engine.run();
-                                GridPane grid = gridCreator.createGrid();
-                                Scene scene = new Scene(grid, 400, 400);
-                                simulationStage.setScene(scene);
-                            });
-                        }
-                    });
-                    t.setDaemon(true);
-                    t.start();
-                }
-            }
-            catch (Exception ex){
-                System.out.println(ex.toString());
-            }
-        });
-        GridPane grid = gridCreator.createGrid();
-        grid.add(toggleButton,900,10,100,100);
-        Scene scene = new Scene(grid, 1000, 1000);
+        Scene scene = new Scene(grid, 1500, 1000);
         simulationStage.setScene(scene);
         simulationStage.show();
-
 
 
     }

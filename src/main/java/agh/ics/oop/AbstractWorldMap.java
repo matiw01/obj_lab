@@ -27,6 +27,10 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         return (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size() > 0) || grassHashMap.containsKey(position);
     }
 
+    public boolean isGrassy(Vector2d position){
+        return grassHashMap.containsKey(position);
+    }
+
     public boolean place(Animal animal) {
         if (canMoveTo(animal.getPosition())){
             animalsList.add(animal);
@@ -38,8 +42,10 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         else throw new IllegalArgumentException("position " + animal.getPosition() + " is not available");
     }
 
+
+
     public Object objectAt(Vector2d position) {
-        if (animalsHashMap.containsKey(position)){
+        if (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size()>0){
             List<Animal> animalsList = animalsHashMap.get(position);
             Animal strongestAnimal = animalsList.get(0);
             for (Animal animal : animalsList){
@@ -54,12 +60,7 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         }
         return null;
     }
-    //Observer method
-//    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
-//        Animal animal = animalsHashMap.get(oldPosition);
-//        animalsHashMap.remove(oldPosition);
-//        animalsHashMap.put(newPosition,animal);
-//    }
+
     public void removeDeadAnimals(){
         for (int i = lowerLeft.x; i <= upperRight.x; i++){
             for (int j = lowerLeft.y; j <= upperRight.y; j++){
@@ -76,6 +77,10 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         List<Animal> newAnimalsOnPos = animalsHashMap.get(newPosition);
         newAnimalsOnPos.add(animal);
     }
+
+    public void addGras(Grass grass){grassHashMap.put(grass.getPosition(), grass);}
+    public void removeGrass(Vector2d position){grassHashMap.remove(position);};
+
     public Integer getMapWidth(){return this.mapWidth;}
     public Integer getMapHeight(){return this.mapHeiht;}
     public Integer getJungleRatio(){return this.jungleRatio;}
