@@ -10,15 +10,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Thread.sleep;
 
@@ -126,18 +124,48 @@ public class App extends Application {
         lowerLeft = corrners[0];
         upperRight = corrners[1];
 
-        //zwierzęta nie reaguja
+        ToggleButton toggleButton = new ToggleButton("Start");
         GridCreator gridCreator = new GridCreator(map);
+        AtomicBoolean running = new AtomicBoolean();
 
-        for (int i = 0; i<10; i++) {
-            GridPane grid = gridCreator.createGrid();
-            Scene scene = new Scene(grid, 400, 400);
-            simulationStage.setScene(scene);
-            simulationStage.show();
-            engine.run();
-            Thread.sleep(1000);
-            System.out.println(i);
-        }
+        toggleButton.setOnAction(event -> {
+            running.set(toggleButton.isSelected());
+            System.out.println(running.get());
+            System.out.println("click");
+            try{
+                if( running.get()){
+                    Thread t = new Thread(() -> {
+                        while (running.get()) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                System.out.println(ex.toString());
+                            }
+
+                            Platform.runLater(() -> {
+                                System.out.println("dziejesie");
+                                engine.run();
+                                GridPane grid = gridCreator.createGrid();
+                                Scene scene = new Scene(grid, 400, 400);
+                                simulationStage.setScene(scene);
+                            });
+                        }
+                    });
+                    t.setDaemon(true);
+                    t.start();
+                }
+            }
+            catch (Exception ex){
+                System.out.println(ex.toString());
+            }
+        });
+        GridPane grid = gridCreator.createGrid();
+        grid.add(toggleButton,900,10,100,100);
+        Scene scene = new Scene(grid, 1000, 1000);
+        simulationStage.setScene(scene);
+        simulationStage.show();
+
+
 
     }
 }
