@@ -1,12 +1,14 @@
 package agh.ics.oop;
 
 
+import javafx.application.Platform;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-public class SimulationEngine implements IEngine {
+public class SimulationEngine implements IEngine, IMapObserver {
     private final IWorldMap map;
     int animalsNum;
     int moveEnergy;
@@ -39,6 +41,7 @@ public class SimulationEngine implements IEngine {
             animal.eat();
             animal.dieIfNoEnergy();
         }
+        map.animalsProcreate();
     }
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
@@ -46,4 +49,10 @@ public class SimulationEngine implements IEngine {
         animalsList.removeIf(animal -> !animal.isAlive());
         map.removeDeadAnimals();
     }
+
+    @Override
+    public void animalAdded(Animal animal) {
+        Platform.runLater(()->{animalsList.add(animal);});
+    }
+    public Integer getAnimalsNum(){return animalsList.size();}
 }

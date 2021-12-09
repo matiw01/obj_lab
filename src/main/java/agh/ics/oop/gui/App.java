@@ -30,7 +30,7 @@ public class App extends Application {
     private Integer plantEnergy;
     private IWorldMap map;
     private Vector2d[] positions;
-    private IEngine engine;
+    private SimulationEngine engine;
     private Vector2d lowerLeft;
     private Vector2d upperRight;
 
@@ -118,8 +118,9 @@ public class App extends Application {
 
     private void Simulation() throws InterruptedException {
         Stage simulationStage = new Stage();
-        map = new RectangularMap(mapWidth, mapHeiht, 100, plantEnergy);
+        map = new RectangularMap(mapWidth, mapHeiht, 50, plantEnergy);
         engine = new SimulationEngine(map, numberOfAnimals, startEnergy, moveEnergy);
+        map.addObserver((IMapObserver) engine);
         Vector2d[] corrners = map.getCorrners();
         lowerLeft = corrners[0];
         upperRight = corrners[1];

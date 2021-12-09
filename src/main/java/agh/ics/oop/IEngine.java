@@ -14,4 +14,5 @@ public interface IEngine {
      *
      */
     void run();
+    public Integer getAnimalsNum();
 }

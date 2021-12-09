@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -40,7 +41,6 @@ public class GridCreator {
         toggleButton.setSelected(!start);
         grid.add(toggleButton,900,10,100,100);
         //button starting or stoping simulation
-        //animals make one move after stoping dont know why??
         toggleButton.setOnAction(event -> {
             running.set(toggleButton.isSelected());
             try{
@@ -116,6 +116,10 @@ public class GridCreator {
                 }
             }
         }
+        grid.add(new Label("grass number"),100,98);
+        grid.add(new Label(map.getGrassNum().toString()),100,99);
+        grid.add(new Label("animals number"),100,100);
+        grid.add(new Label(engine.getAnimalsNum().toString()),100,101);
         grid.setGridLinesVisible(true);
     }
 }

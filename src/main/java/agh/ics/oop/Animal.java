@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class Animal implements IMapElement{
+public class Animal implements IMapElement, Comparable{
     Integer moveEnergy;
     private boolean alive;
     private int energy;
-    private int procreareEnergy;
-    private List<Integer> geontype;
+    private final int procreareEnergy;
+    private final List<Integer> geontype;
     private MapDirection direction;
     private Vector2d position;
     private final IWorldMap map;
@@ -77,6 +77,7 @@ public class Animal implements IMapElement{
     public Vector2d getPosition() {return this.position;}
     public MapDirection getDirection(){return this.direction;}
     public Integer getEnergy(){return this.energy;}
+    public  List<Integer> getGeontype(){return this.geontype;}
     public Integer getProcreateEnergy(){return this.procreareEnergy;}
     public boolean isAlive(){return this.alive;}
     public String toString(){return ""+getDirection();}
@@ -101,8 +102,23 @@ public class Animal implements IMapElement{
         return newPosition;
     }
 //    to be continued
-//    public Animal procreate(Animal otherAnimal){
-//        List<Integer> newBornGentype =
-//        Animal newBorn = new Animal(this.map, this.position,);
-//    }
+    public Animal procreate(Animal other){
+        List<Integer> newBornGentype = new ArrayList<>();
+        newBornGentype.addAll(this.geontype.subList(0,this.energy/(this.energy+other.getEnergy())+1));
+        newBornGentype.addAll(this.geontype.subList(this.energy/(this.energy+other.getEnergy()),32));
+        return new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Animal other = (Animal) o;
+        int cmp = 0;
+        if (this.getEnergy() > other.getEnergy()){
+            cmp = 1;
+        }
+        if (this.getEnergy() < other.getEnergy()){
+            return -1;
+        }
+        return cmp;
+    }
 }
