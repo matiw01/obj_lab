@@ -101,11 +101,10 @@ public class Animal implements IMapElement, Comparable{
         }
         return newPosition;
     }
-//    to be continued
     public Animal procreate(Animal other){
         List<Integer> newBornGentype = new ArrayList<>();
         newBornGentype.addAll(this.geontype.subList(0,this.energy/(this.energy+other.getEnergy())+1));
-        newBornGentype.addAll(this.geontype.subList(this.energy/(this.energy+other.getEnergy()),32));
+        newBornGentype.addAll(this.geontype.subList(this.energy/(this.energy+other.getEnergy())+1,32));
         return new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
     }
 
