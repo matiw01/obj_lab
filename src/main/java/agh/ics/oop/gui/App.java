@@ -28,9 +28,11 @@ public class App extends Application {
     private Integer startEnergy;
     private Integer moveEnergy;
     private Integer plantEnergy;
-    private IWorldMap map;
+    private FlippedMap flippedMap;
+    private RectangularMap rectangularMap;
     private Vector2d[] positions;
-    private SimulationEngine engine;
+    private SimulationEngine flippedEngine;
+    private SimulationEngine rectangularEngine;
     private Vector2d lowerLeft;
     private Vector2d upperRight;
 
@@ -118,19 +120,26 @@ public class App extends Application {
 
     private void Simulation() throws InterruptedException {
         Stage simulationStage = new Stage();
-        map = new FlippedMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
-        engine = new SimulationEngine(map, numberOfAnimals, startEnergy, moveEnergy);
-        map.addObserver((IMapObserver) engine);
-        Vector2d[] corrners = map.getCorrners();
+        flippedMap = new FlippedMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
+        rectangularMap = new RectangularMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
+        flippedEngine = new SimulationEngine(flippedMap, numberOfAnimals, startEnergy, moveEnergy);
+        rectangularEngine = new SimulationEngine(rectangularMap, numberOfAnimals, startEnergy, moveEnergy);
+        flippedMap.addObserver((IMapObserver) flippedEngine);
+        rectangularMap.addObserver((IMapObserver) rectangularEngine);
+        Vector2d[] corrners = rectangularMap.getCorrners();
         lowerLeft = corrners[0];
         upperRight = corrners[1];
 
-        GridPane grid = new GridPane();
-        AtomicBoolean running = new AtomicBoolean();
-        GridCreator gridCreator = new GridCreator(map, grid, engine, running);
-        gridCreator.createGrid(true);
-
-        Scene scene = new Scene(grid, 1500, 1000);
+        GridPane grid1 = new GridPane();
+        GridPane grid2 = new GridPane();
+        HBox hBox = new HBox(grid1, grid2);
+        AtomicBoolean flippefRunning = new AtomicBoolean();
+        AtomicBoolean rectangularRunning = new AtomicBoolean();
+        GridCreator gridflippedCreator = new GridCreator(flippedMap, grid1, flippedEngine, flippefRunning);
+        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, grid2, rectangularEngine, rectangularRunning);
+        gridflippedCreator.createGrid(true);
+        gridrectangularCreator.createGrid(true);
+        Scene scene = new Scene(hBox, 1500, 1000);
         simulationStage.setScene(scene);
         simulationStage.show();
 

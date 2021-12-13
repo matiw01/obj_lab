@@ -29,10 +29,10 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         this.jungleLowerLeft = new Vector2d((int) (width/2-(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2-(height/2)*Math.sqrt((double) jungleRatio/100)));
         this.jungleUpperRight = new Vector2d((int) (width/2+(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2+(height/2)*Math.sqrt((double) jungleRatio/100)));
 
-        System.out.println(lowerLeft);
-        System.out.println(upperRight);
-        System.out.println(jungleLowerLeft);
-        System.out.println(jungleUpperRight);
+//        System.out.println(lowerLeft);
+//        System.out.println(upperRight);
+//        System.out.println(jungleLowerLeft);
+//        System.out.println(jungleUpperRight);
         for (int i = lowerLeft.x; i <= upperRight.x; i++){
             for (int j = lowerLeft.y; j <= upperRight.y; j++){
                 animalsHashMap.put(new Vector2d(i,j),new ArrayList<Animal>());
