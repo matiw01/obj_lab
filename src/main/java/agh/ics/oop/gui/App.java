@@ -48,8 +48,8 @@ public class App extends Application {
         TextField tf3 = new TextField("10");
         TextField tf4 = new TextField("10");
         TextField tf5 = new TextField("50");
-        TextField tf6 = new TextField("10");
-        TextField tf7 = new TextField("50");
+        TextField tf6 = new TextField("6");
+        TextField tf7 = new TextField("150");
         // these are the individual fields for input, you can set the default text
 
         // keeps user from changing this text field
@@ -118,7 +118,7 @@ public class App extends Application {
 
     private void Simulation() throws InterruptedException {
         Stage simulationStage = new Stage();
-        map = new RectangularMap(mapWidth, mapHeiht, 50, plantEnergy);
+        map = new FlippedMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
         engine = new SimulationEngine(map, numberOfAnimals, startEnergy, moveEnergy);
         map.addObserver((IMapObserver) engine);
         Vector2d[] corrners = map.getCorrners();

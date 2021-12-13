@@ -14,6 +14,8 @@ public class SimulationEngine implements IEngine, IMapObserver {
     int moveEnergy;
     Vector2d lowerLeft;
     Vector2d upperRight;
+    Vector2d jungleLowerLeft;
+    Vector2d jungleUpperRight;
     Integer startEnergy;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
     public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy){
@@ -24,8 +26,11 @@ public class SimulationEngine implements IEngine, IMapObserver {
         Vector2d[] corrners = map.getCorrners();
         lowerLeft = corrners[0];
         upperRight = corrners[1];
+        Vector2d[] jungleCorners = map.getJungleCorners();
+        this.jungleLowerLeft = jungleCorners[0];
+        this.jungleUpperRight = jungleCorners[1];
         for(int i = 0; i < animalsNum; i++) {
-            Animal animal = new Animal(map, new Vector2d((int)(Math.random()*upperRight.x), (int)(Math.random()* upperRight.y)), new ArrayList<>(),startEnergy, startEnergy/2, moveEnergy);
+            Animal animal = new Animal(map, new Vector2d((int)(Math.random()*(upperRight.x+1)), (int)(Math.random()*(upperRight.y+1))), new ArrayList<>(),startEnergy, startEnergy/2, moveEnergy);
             map.place(animal);
             animalsList.add(animal);
         }
@@ -36,12 +41,13 @@ public class SimulationEngine implements IEngine, IMapObserver {
     @Override
     public void run(){
         removeDeadAnimals();
+        map.animalsEat();
         for (Animal animal : animalsList){
             animal.move();
-            animal.eat();
             animal.dieIfNoEnergy();
         }
         map.animalsProcreate();
+        map.addGras();
     }
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
