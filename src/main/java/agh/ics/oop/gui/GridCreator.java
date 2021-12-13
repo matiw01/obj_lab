@@ -48,7 +48,7 @@ public class GridCreator {
                     Thread t = new Thread(() -> {
                         while (running.get()) {
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(100);
                             } catch (InterruptedException ex) {
                                 System.out.println(ex);
                             }
