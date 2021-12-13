@@ -34,6 +34,7 @@ public class Animal implements IMapElement, Comparable{
     }
 
     public void move(){
+//        System.out.println(energy);
         this.energy -= moveEnergy;
         int gen = geontype.get((int) (Math.random() * 32));
         MoveDirection direction = MoveDirection.values()[gen];
@@ -102,9 +103,25 @@ public class Animal implements IMapElement, Comparable{
         return newPosition;
     }
     public Animal procreate(Animal other){
+//        System.out.println("genotyp rodzica 1");
+//        System.out.println(this.getGeontype());
+//        System.out.println("energia rodzica 1");
+//        System.out.println(this.getEnergy());
+//        System.out.println("genotyp rodzica 2");
+//        System.out.println(other.getGeontype());
+//        System.out.println("energia rodzica 2");
+//        System.out.println(other.getEnergy());
+
         List<Integer> newBornGentype = new ArrayList<>();
         newBornGentype.addAll(this.geontype.subList(0,this.energy/(this.energy+other.getEnergy())+1));
         newBornGentype.addAll(this.geontype.subList(this.energy/(this.energy+other.getEnergy())+1,32));
+//        System.out.println("genotyp dziecka");
+//        System.out.println(newBornGentype);
+//        System.out.println("energia dziecka");
+//        System.out.println((this.energy+other.getEnergy())/4);
+//        System.out.println("-----------------------------------");
+        this.energy -= this.energy/4;
+        other.energy -= other.energy/4;
         return new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
     }
 

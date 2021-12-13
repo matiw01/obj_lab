@@ -26,6 +26,7 @@ public class GridCreator {
     IWorldMap map;
     int columnWidth = 50;
     int rowWidth = 50;
+    Integer epoch = 0;
     public GridCreator(IWorldMap map, GridPane grid, IEngine engine,AtomicBoolean running){
         this.running = running;
         this.engine = engine;
@@ -37,6 +38,7 @@ public class GridCreator {
 
     }
     public void createGrid(boolean start){
+        epoch += 1;
         ToggleButton toggleButton = new ToggleButton("Start");
         toggleButton.setSelected(!start);
         grid.add(toggleButton,900,10,100,100);
@@ -52,7 +54,6 @@ public class GridCreator {
                             } catch (InterruptedException ex) {
                                 System.out.println(ex);
                             }
-
                             Platform.runLater(() -> {
                                 engine.run();
                                 grid.setGridLinesVisible(false);
@@ -120,6 +121,8 @@ public class GridCreator {
         grid.add(new Label(map.getGrassNum().toString()),100,99);
         grid.add(new Label("animals number"),100,100);
         grid.add(new Label(engine.getAnimalsNum().toString()),100,101);
+        grid.add(new Label("epoch"), 100, 102);
+        grid.add(new Label(epoch.toString()),100,103);
         grid.setGridLinesVisible(true);
     }
 }

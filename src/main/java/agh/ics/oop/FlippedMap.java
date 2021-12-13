@@ -7,8 +7,8 @@ import java.util.List;
 public class FlippedMap extends AbstractWorldMap implements IWorldMap{
     int grasNum;
     private Integer plantEnergy;
-    public FlippedMap(int width,int height, int grasNum, Integer plantEnergy){
-        super(width,height,grasNum, plantEnergy);
+    public FlippedMap(int width,int height, int grasNum, Integer plantEnergy,Integer jungleRatio){
+        super(width,height,grasNum, plantEnergy,jungleRatio);
     }
     @Override
     public Vector2d[] getCorrners() {return new Vector2d[] {lowerLeft,upperRight};}

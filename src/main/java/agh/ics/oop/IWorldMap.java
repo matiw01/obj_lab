@@ -41,14 +41,16 @@ public interface IWorldMap {
      *            The position of the object.
      * @return Object or null if the position is not occupied.
      */
+    Vector2d[] getJungleCorners();
     void addObserver(IMapObserver observer);
+    void animalsEat();
     public void animalsProcreate();
     public boolean isGrassy(Vector2d position);
     Object objectAt(Vector2d position);
     public void removeDeadAnimals();
     Vector2d[] getCorrners();
     void removeGrass(Vector2d position);
-    public void addGras(Grass grass);
+    public void addGras();
     Integer getGrassNum();
     Integer getMapWidth();
     Integer getMapHeight();

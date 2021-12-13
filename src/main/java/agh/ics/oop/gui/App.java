@@ -10,6 +10,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -28,9 +30,11 @@ public class App extends Application {
     private Integer startEnergy;
     private Integer moveEnergy;
     private Integer plantEnergy;
-    private IWorldMap map;
+    private FlippedMap flippedMap;
+    private RectangularMap rectangularMap;
     private Vector2d[] positions;
-    private SimulationEngine engine;
+    private SimulationEngine flippedEngine;
+    private SimulationEngine rectangularEngine;
     private Vector2d lowerLeft;
     private Vector2d upperRight;
 
@@ -48,8 +52,8 @@ public class App extends Application {
         TextField tf3 = new TextField("10");
         TextField tf4 = new TextField("10");
         TextField tf5 = new TextField("50");
-        TextField tf6 = new TextField("10");
-        TextField tf7 = new TextField("50");
+        TextField tf6 = new TextField("6");
+        TextField tf7 = new TextField("150");
         // these are the individual fields for input, you can set the default text
 
         // keeps user from changing this text field
@@ -118,20 +122,47 @@ public class App extends Application {
 
     private void Simulation() throws InterruptedException {
         Stage simulationStage = new Stage();
-        map = new RectangularMap(mapWidth, mapHeiht, 50, plantEnergy);
-        engine = new SimulationEngine(map, numberOfAnimals, startEnergy, moveEnergy);
-        map.addObserver((IMapObserver) engine);
-        Vector2d[] corrners = map.getCorrners();
+        flippedMap = new FlippedMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
+        rectangularMap = new RectangularMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
+        flippedEngine = new SimulationEngine(flippedMap, numberOfAnimals, startEnergy, moveEnergy);
+        rectangularEngine = new SimulationEngine(rectangularMap, numberOfAnimals, startEnergy, moveEnergy);
+        flippedMap.addObserver((IMapObserver) flippedEngine);
+        rectangularMap.addObserver((IMapObserver) rectangularEngine);
+        Vector2d[] corrners = rectangularMap.getCorrners();
         lowerLeft = corrners[0];
         upperRight = corrners[1];
 
-        GridPane grid = new GridPane();
-        AtomicBoolean running = new AtomicBoolean();
-        GridCreator gridCreator = new GridCreator(map, grid, engine, running);
-        gridCreator.createGrid(true);
+        GridPane grid1 = new GridPane();
+        GridPane grid2 = new GridPane();
 
-        Scene scene = new Scene(grid, 1500, 1000);
+        NumberAxis flippedXAxis = new NumberAxis();
+        flippedXAxis.setLabel("No of employees");
+
+        NumberAxis flippedYAxis = new NumberAxis();
+        flippedYAxis.setLabel("Revenue per employee");
+
+        LineChart flippedLineChart = new LineChart(flippedXAxis, flippedYAxis);
+
+        NumberAxis rectanularXAxis = new NumberAxis();
+        flippedXAxis.setLabel("No of employees");
+
+        NumberAxis rectanularYAxis = new NumberAxis();
+        flippedYAxis.setLabel("Revenue per employee");
+
+        LineChart rectanularLineChart = new LineChart(rectanularXAxis, rectanularYAxis);
+        VBox flipedVBox = new VBox(grid1, flippedLineChart);
+        VBox rectangularVBox = new VBox(grid2, rectanularLineChart);
+
+        HBox hBox = new HBox(flipedVBox, rectangularVBox);
+        AtomicBoolean flippefRunning = new AtomicBoolean();
+        AtomicBoolean rectangularRunning = new AtomicBoolean();
+        GridCreator gridflippedCreator = new GridCreator(flippedMap, grid1, flippedEngine, flippefRunning);
+        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, grid2, rectangularEngine, rectangularRunning);
+        gridflippedCreator.createGrid(true);
+        gridrectangularCreator.createGrid(true);
+        Scene scene = new Scene(hBox, 1500, 1000);
         simulationStage.setScene(scene);
+        simulationStage.setFullScreen(true);
         simulationStage.show();
 
 
