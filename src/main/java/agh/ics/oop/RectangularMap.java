@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class RectangularMap extends AbstractWorldMap{
-    public RectangularMap(int width,int height, int grasNum, Integer plantEnergy, Integer jungleRatio){
-        super(width,height, grasNum, plantEnergy,jungleRatio);
+    public RectangularMap(int width,int height, Integer plantEnergy, Integer jungleRatio){
+        super(width,height, plantEnergy,jungleRatio);
     }
     public Vector2d[] getCorrners(){return new Vector2d[] {lowerLeft,upperRight};}
     @Override

@@ -6,6 +6,8 @@ import agh.ics.oop.IWorldMap;
 import agh.ics.oop.Vector2d;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -18,6 +20,7 @@ import javafx.scene.layout.VBox;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GridCreator {
+
     AtomicBoolean running;
     IEngine engine;
     GridPane grid;
@@ -27,7 +30,11 @@ public class GridCreator {
     int columnWidth = 50;
     int rowWidth = 50;
     Integer epoch = 0;
-    public GridCreator(IWorldMap map, GridPane grid, IEngine engine,AtomicBoolean running){
+    LineChart lineChart;
+    XYChart.Series<Integer,Integer> dataSeries1 = new XYChart.Series();
+    XYChart.Series<Integer,Integer> dataSeries2 = new XYChart.Series();
+    public GridCreator(IWorldMap map, LineChart lineChart, GridPane grid, IEngine engine, AtomicBoolean running){
+        this.lineChart = lineChart;
         this.running = running;
         this.engine = engine;
         this.grid = grid;
@@ -36,7 +43,21 @@ public class GridCreator {
         this.lowerLeft = corrners[0];
         this.upperRight = corrners[1];
 
+        dataSeries1.getData().add(new XYChart.Data( 0, 0));
+        dataSeries2.getData().add(new XYChart.Data( 0, map.getNumberOfAnimals()));
+
+        lineChart.getData().add(dataSeries1);
+        lineChart.getData().add(dataSeries2);
+
     }
+
+    public void updateChart(){
+        Platform.runLater(() -> {
+            dataSeries1.getData().add(new XYChart.Data(epoch,map.getGrassNum()));
+            dataSeries2.getData().add(new XYChart.Data(epoch,map.getNumberOfAnimals()));
+        });
+    }
+
     public void createGrid(boolean start){
         epoch += 1;
         ToggleButton toggleButton = new ToggleButton("Start");
@@ -50,7 +71,7 @@ public class GridCreator {
                     Thread t = new Thread(() -> {
                         while (running.get()) {
                             try {
-                                Thread.sleep(100);
+                                Thread.sleep(500);
                             } catch (InterruptedException ex) {
                                 System.out.println(ex);
                             }
@@ -62,6 +83,7 @@ public class GridCreator {
                                 grid.getChildren().clear();
                                 grid.setGridLinesVisible(true);
                                 this.createGrid(!running.get());
+                                updateChart();
                             });
                         }
                     });

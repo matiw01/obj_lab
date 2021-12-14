@@ -11,19 +11,16 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     protected Integer mapWidth;
     protected Integer mapHeiht;
     protected Integer jungleRatio;
-    protected Integer numberOfAnimals;
     protected Integer startEnergy;
     protected Integer moveEnergy;
     protected Integer plantEnergy;
     protected Vector2d jungleLowerLeft;
     protected Vector2d jungleUpperRight;
 
-    int grasNum;
 
-    public AbstractWorldMap(int width,int height, int grasNum, Integer plantEnergy, Integer jungleRatio){
+    public AbstractWorldMap(int width,int height, Integer plantEnergy, Integer jungleRatio){
         this.jungleRatio = jungleRatio;
         this.plantEnergy = plantEnergy;
-        this.grasNum = grasNum;
         this.lowerLeft = new Vector2d(0,0);
         this.upperRight = new Vector2d(width -1, height -1);
         this.jungleLowerLeft = new Vector2d((int) (width/2-(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2-(height/2)*Math.sqrt((double) jungleRatio/100)));
@@ -171,7 +168,15 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     public Integer getMapWidth(){return this.mapWidth;}
     public Integer getMapHeight(){return this.mapHeiht;}
     public Integer getJungleRatio(){return this.jungleRatio;}
-    public Integer getNumberOfAnimals(){return this.numberOfAnimals;}
+    public Integer getNumberOfAnimals(){
+        Integer numOfAnimals = 0;
+        for (int i = 0; i <= upperRight.x; i++){
+            for (int j = 0; j <= upperRight.y; j++){
+                numOfAnimals += animalsHashMap.get(new Vector2d(i,j)).size();
+            }
+        }
+        return numOfAnimals;
+    }
     public Integer getStartEnergy(){return this.startEnergy;}
     public Integer getMoveEnergy(){return this.moveEnergy;}
     public Integer getPlantEnergy(){return this.plantEnergy;}

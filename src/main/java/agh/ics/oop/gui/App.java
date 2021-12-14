@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -50,8 +51,8 @@ public class App extends Application {
         TextField tf1 = new TextField("10");
         TextField tf2 = new TextField("10");
         TextField tf3 = new TextField("10");
-        TextField tf4 = new TextField("10");
-        TextField tf5 = new TextField("50");
+        TextField tf4 = new TextField("30");
+        TextField tf5 = new TextField("80");
         TextField tf6 = new TextField("6");
         TextField tf7 = new TextField("150");
         // these are the individual fields for input, you can set the default text
@@ -122,8 +123,8 @@ public class App extends Application {
 
     private void Simulation() throws InterruptedException {
         Stage simulationStage = new Stage();
-        flippedMap = new FlippedMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
-        rectangularMap = new RectangularMap(mapWidth, mapHeiht, 50, plantEnergy, jungleRatio);
+        flippedMap = new FlippedMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
+        rectangularMap = new RectangularMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
         flippedEngine = new SimulationEngine(flippedMap, numberOfAnimals, startEnergy, moveEnergy);
         rectangularEngine = new SimulationEngine(rectangularMap, numberOfAnimals, startEnergy, moveEnergy);
         flippedMap.addObserver((IMapObserver) flippedEngine);
@@ -134,30 +135,33 @@ public class App extends Application {
 
         GridPane grid1 = new GridPane();
         GridPane grid2 = new GridPane();
-
+        //flipped chart
         NumberAxis flippedXAxis = new NumberAxis();
-        flippedXAxis.setLabel("No of employees");
+        flippedXAxis.setLabel("");
 
         NumberAxis flippedYAxis = new NumberAxis();
-        flippedYAxis.setLabel("Revenue per employee");
+        flippedYAxis.setLabel("");
 
-        LineChart flippedLineChart = new LineChart(flippedXAxis, flippedYAxis);
+        LineChart<Integer, Integer> flippedLineChart = new LineChart(flippedXAxis, flippedYAxis);
 
+
+        //rectangular chart
         NumberAxis rectanularXAxis = new NumberAxis();
-        flippedXAxis.setLabel("No of employees");
+        rectanularXAxis.setLabel("");
 
         NumberAxis rectanularYAxis = new NumberAxis();
-        flippedYAxis.setLabel("Revenue per employee");
+        rectanularYAxis.setLabel("");
 
-        LineChart rectanularLineChart = new LineChart(rectanularXAxis, rectanularYAxis);
+        LineChart<Integer, Integer> rectanularLineChart = new LineChart(rectanularXAxis, rectanularYAxis);
+
         VBox flipedVBox = new VBox(grid1, flippedLineChart);
         VBox rectangularVBox = new VBox(grid2, rectanularLineChart);
 
         HBox hBox = new HBox(flipedVBox, rectangularVBox);
         AtomicBoolean flippefRunning = new AtomicBoolean();
         AtomicBoolean rectangularRunning = new AtomicBoolean();
-        GridCreator gridflippedCreator = new GridCreator(flippedMap, grid1, flippedEngine, flippefRunning);
-        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, grid2, rectangularEngine, rectangularRunning);
+        GridCreator gridflippedCreator = new GridCreator(flippedMap, flippedLineChart, grid1, flippedEngine, flippefRunning);
+        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, rectanularLineChart, grid2, rectangularEngine, rectangularRunning);
         gridflippedCreator.createGrid(true);
         gridrectangularCreator.createGrid(true);
         Scene scene = new Scene(hBox, 1500, 1000);
