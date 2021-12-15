@@ -181,4 +181,5 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     public Integer getMoveEnergy(){return this.moveEnergy;}
     public Integer getPlantEnergy(){return this.plantEnergy;}
     public Integer getGrassNum(){return grassHashMap.size();}
+
 }

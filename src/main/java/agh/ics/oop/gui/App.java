@@ -137,54 +137,54 @@ public class App extends Application {
         GridPane grid1 = new GridPane();
         GridPane grid2 = new GridPane();
         //flipped chart
-        NumberAxis flippedXAxis = new NumberAxis();
-        flippedXAxis.setLabel("");
+        ChartMaintainer flippedChartManitainer = new ChartMaintainer("epoh", "",0,numberOfAnimals);
+        LineChart<Integer, Integer> flippedLineChart = flippedChartManitainer.createChart();
+        flippedEngine.addObserver(flippedChartManitainer);
 
-        NumberAxis flippedYAxis = new NumberAxis();
-        flippedYAxis.setLabel("");
-
-        LineChart<Integer, Integer> flippedLineChart = new LineChart(flippedXAxis, flippedYAxis);
         //fliped floppa info
+        TabelMaintainer flipedTableMaintainer = new TabelMaintainer();
+        TableView flippedTable =flipedTableMaintainer.createTable();
+        flippedEngine.addObserver(flipedTableMaintainer);
+//
+//        TableColumn<Animal, String> positonColumn = new TableColumn<>("Position");
+//        positonColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
+//
+//        TableColumn<Animal, String> lifeLengthColumn = new TableColumn<>("Life length");
+//        lifeLengthColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+//
+//        TableColumn<Animal, String> numberOfChildrenColumn = new TableColumn<>("Children");
+//        numberOfChildrenColumn.setCellValueFactory(new PropertyValueFactory<>("childrenNumber"));
+//
+//        TableColumn<Animal, String> descendantsNumberColumn = new TableColumn<>("Descendants");
+//        descendantsNumberColumn.setCellValueFactory(new PropertyValueFactory<>("descendantsNumber"));
+//
+//        flippedFloppaTable.getColumns().add(positonColumn);
+//        flippedFloppaTable.getColumns().add(lifeLengthColumn);
+//        flippedFloppaTable.getColumns().add(numberOfChildrenColumn);
+//        flippedFloppaTable.getColumns().add(descendantsNumberColumn);
 
-        TableView flippedFloppaTable = new TableView();
+//        example floppa added to table
+//        Animal floppa = new Animal(flippedMap, new Vector2d(1,1), new ArrayList<>(), 0,0,0);
+//        flippedFloppaTable.getItems().add(floppa);
 
-        TableColumn<Animal, String> positonColumn = new TableColumn<>("Position");
-        positonColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
-
-        TableColumn<Animal, String> lifeLengthColumn = new TableColumn<>("Life length");
-        lifeLengthColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
-
-        TableColumn<Animal, String> numberOfChildrenColumn = new TableColumn<>("Children");
-        numberOfChildrenColumn.setCellValueFactory(new PropertyValueFactory<>("childrenNumber"));
-
-        TableColumn<Animal, String> descendantsNumberColumn = new TableColumn<>("Descendants");
-        descendantsNumberColumn.setCellValueFactory(new PropertyValueFactory<>("descendantsNumber"));
-
-        flippedFloppaTable.getColumns().add(positonColumn);
-        flippedFloppaTable.getColumns().add(lifeLengthColumn);
-        flippedFloppaTable.getColumns().add(numberOfChildrenColumn);
-        flippedFloppaTable.getColumns().add(descendantsNumberColumn);
-
-//        example floppa added to
-//        flippedFloppaTable.getItems().add(new Animal(flippedMap, new Vector2d(1,1), new ArrayList<>(), 0,0,0));
 
         //rectangular chart
-        NumberAxis rectanularXAxis = new NumberAxis();
-        rectanularXAxis.setLabel("");
+        ChartMaintainer rectangularChartMaintainer = new ChartMaintainer("epoh","",0,numberOfAnimals);
+        LineChart<Integer, Integer> rectanularLineChart = rectangularChartMaintainer.createChart();
+        rectangularEngine.addObserver(rectangularChartMaintainer);
+        //rectangular floppa info
+        TabelMaintainer recangularTableMaintainer = new TabelMaintainer();
+        TableView rectangularTable = recangularTableMaintainer.createTable();
+        rectangularEngine.addObserver(recangularTableMaintainer);
 
-        NumberAxis rectanularYAxis = new NumberAxis();
-        rectanularYAxis.setLabel("");
-
-        LineChart<Integer, Integer> rectanularLineChart = new LineChart(rectanularXAxis, rectanularYAxis);
-
-        VBox flipedVBox = new VBox(grid1, flippedFloppaTable,  flippedLineChart);
-        VBox rectangularVBox = new VBox(grid2, rectanularLineChart);
+        VBox flipedVBox = new VBox(grid1, flippedTable,  flippedLineChart);
+        VBox rectangularVBox = new VBox(grid2, rectangularTable, rectanularLineChart);
 
         HBox hBox = new HBox(flipedVBox, rectangularVBox);
         AtomicBoolean flippefRunning = new AtomicBoolean();
         AtomicBoolean rectangularRunning = new AtomicBoolean();
-        GridCreator gridflippedCreator = new GridCreator(flippedMap, flippedLineChart, grid1, flippedEngine, flippefRunning);
-        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, rectanularLineChart, grid2, rectangularEngine, rectangularRunning);
+        GridCreator gridflippedCreator = new GridCreator(flippedMap, flipedTableMaintainer, grid1, flippedEngine, flippefRunning);
+        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, recangularTableMaintainer , grid2, rectangularEngine, rectangularRunning);
         gridflippedCreator.createGrid(true);
         gridrectangularCreator.createGrid(true);
         Scene scene = new Scene(hBox, 1500, 1000);

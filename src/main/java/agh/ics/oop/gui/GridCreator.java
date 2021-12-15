@@ -10,6 +10,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -17,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GridCreator {
@@ -30,11 +33,9 @@ public class GridCreator {
     int columnWidth = 50;
     int rowWidth = 50;
     Integer epoch = 0;
-    LineChart lineChart;
-    XYChart.Series<Integer,Integer> dataSeries1 = new XYChart.Series();
-    XYChart.Series<Integer,Integer> dataSeries2 = new XYChart.Series();
-    public GridCreator(IWorldMap map, LineChart lineChart, GridPane grid, IEngine engine, AtomicBoolean running){
-        this.lineChart = lineChart;
+    TabelMaintainer tabelMaintainer;
+    public GridCreator(IWorldMap map,TabelMaintainer tabelMaintainer, GridPane grid, IEngine engine, AtomicBoolean running){
+        this.tabelMaintainer = tabelMaintainer;
         this.running = running;
         this.engine = engine;
         this.grid = grid;
@@ -43,20 +44,10 @@ public class GridCreator {
         this.lowerLeft = corrners[0];
         this.upperRight = corrners[1];
 
-        dataSeries1.getData().add(new XYChart.Data( 0, 0));
-        dataSeries2.getData().add(new XYChart.Data( 0, map.getNumberOfAnimals()));
 
-        lineChart.getData().add(dataSeries1);
-        lineChart.getData().add(dataSeries2);
 
     }
 
-    public void updateChart(){
-        Platform.runLater(() -> {
-            dataSeries1.getData().add(new XYChart.Data(epoch,map.getGrassNum()));
-            dataSeries2.getData().add(new XYChart.Data(epoch,map.getNumberOfAnimals()));
-        });
-    }
 
     public void createGrid(boolean start){
         epoch += 1;
@@ -83,7 +74,6 @@ public class GridCreator {
                                 grid.getChildren().clear();
                                 grid.setGridLinesVisible(true);
                                 this.createGrid(!running.get());
-                                updateChart();
                             });
                         }
                     });
@@ -96,7 +86,7 @@ public class GridCreator {
             }
         });
         //toggleButton grup
-
+        ToggleGroup toggleFloppaGroup = new ToggleGroup();
         //map labeling
         grid.getColumnConstraints().add(new ColumnConstraints(columnWidth));
         Label axisLabel = new Label("y\\x");
@@ -126,8 +116,36 @@ public class GridCreator {
                         iv.setImage(img);
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
+                        if (((Animal) object).isFollowed()){
+                            ColorAdjust colorAdjust = new ColorAdjust();
+                            colorAdjust.setContrast(0.4);
+                            colorAdjust.setHue(-0.05);
+                            colorAdjust.setBrightness(0.4);
+                            colorAdjust.setSaturation(0.8);
+                            iv.setEffect(colorAdjust);
+                        }
                         grid.add(iv,i+1-lowerLeft.x,upperRight.y-j+1);
                         //add floppa button alowing to show info about floppa
+                        if(!running.get()) {
+                            ToggleButton toggleFloppaButton = new ToggleButton();
+                            toggleFloppaButton.setToggleGroup(toggleFloppaGroup);
+                            toggleFloppaButton.setBackground(null);
+                            toggleFloppaButton.setPrefWidth(columnWidth);
+                            toggleFloppaButton.setPrefHeight(rowWidth);
+                            grid.add(toggleFloppaButton, i + 1 - lowerLeft.x, upperRight.y - j + 1);
+                            toggleFloppaButton.setSelected(((Animal) object).isFollowed());
+                            toggleFloppaButton.setOnAction(event -> {
+                                if (toggleFloppaButton.isSelected()) {
+                                        ((Animal) object).changeFollowingStatus();
+                                        tabelMaintainer.setFollowedAnimal((Animal) object);
+                                        tabelMaintainer.updateTable();
+                                }
+                                else {
+                                    tabelMaintainer.removeFollowedAnimal();
+                                    tabelMaintainer.updateTable();
+                                }
+                            });
+                        }
                     }
                     else {
                         Image img = new Image("grass.jpg");

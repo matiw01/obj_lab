@@ -3,12 +3,15 @@ package agh.ics.oop;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
-public class Animal implements IMapElement, Comparable{
-    Integer age = 0;
+public class Animal implements IMapElement, Comparable, IAnimalObserver{
+    private Integer deathEpoch;
+    private final List<Animal> observatedAnimals = new ArrayList<>();
+    private IAnimalObserver animalObserver;
+    public Integer age = 0;
     private Integer childrenNumber = 0;
     Integer descendantsNumber = 0;
+    private boolean followed;
     Integer moveEnergy;
     private boolean alive;
     private int energy;
@@ -19,13 +22,14 @@ public class Animal implements IMapElement, Comparable{
     private final IWorldMap map;
     private final ArrayList<IPositionChangedObserver> observers = new ArrayList<>();
     public Animal(IWorldMap map,Vector2d initialPosition,List<Integer> genotype, int energy, int procreareEnergy, Integer moveEnergy){
+        this.followed = false;
         this.moveEnergy = moveEnergy;
         this.alive = true;
         this.position = initialPosition;
         this.map = map;
         this.geontype = genotype;
         this.direction = MapDirection.values()[(int)(Math.random()*8)];
-        this.addObserver((IPositionChangedObserver) map);
+        this.addPositionObserver((IPositionChangedObserver) map);
         this.energy = energy;
         this.procreareEnergy = procreareEnergy;
         if (genotype.size() == 0){
@@ -37,7 +41,7 @@ public class Animal implements IMapElement, Comparable{
     }
 
     public void move(){
-//        System.out.println(energy);
+        this.age += 1;
         this.energy -= moveEnergy;
         int gen = geontype.get((int) (Math.random() * 32));
         MoveDirection direction = MoveDirection.values()[gen];
@@ -72,15 +76,17 @@ public class Animal implements IMapElement, Comparable{
             energy += map.getPlantEnergy();
         }
     }
-    public void dieIfNoEnergy(){
+    public void dieIfNoEnergy(Integer deathEpoch){
         if (energy <= 0){
             this.alive = false;
+            this.deathEpoch = deathEpoch;
         }
     }
     public boolean isAt(Vector2d position){return this.position.equals(position);}
     public Vector2d getPosition() {return this.position;}
     public MapDirection getDirection(){return this.direction;}
     public Integer getEnergy(){return this.energy;}
+    public Integer getDeathEpoch(){return this.deathEpoch;}
     public Integer getChildrenNumber(){return this.childrenNumber;}
     public Integer getAge(){return this.age;}
     public Integer getDescendantsNumber(){return this.descendantsNumber;}
@@ -88,8 +94,22 @@ public class Animal implements IMapElement, Comparable{
     public Integer getProcreateEnergy(){return this.procreareEnergy;}
     public boolean isAlive(){return this.alive;}
     public String toString(){return ""+getDirection();}
-    void addObserver(IPositionChangedObserver observer){observers.add(observer);}
-    void removeObserver(IPositionChangedObserver observer){observers.remove(observer);}
+    public void changeFollowingStatus(){
+        this.followed = !this.followed;
+        if (!this.followed){
+            for (Animal observer : observatedAnimals){
+                observer.removeAnimalObserver();
+            }
+            observatedAnimals.clear();
+            this.childrenNumber = 0;
+            this.descendantsNumber = 0;
+        }
+    }
+    public boolean isFollowed(){return this.followed;}
+    void addPositionObserver(IPositionChangedObserver observer){observers.add(observer);}
+    void removePositionObserver(IPositionChangedObserver observer){observers.remove(observer);}
+    void addAnimalObserver(IAnimalObserver animalObserver){this.animalObserver = animalObserver;}
+    void removeAnimalObserver(){this.animalObserver = null;}
     public boolean goesOutsiedeMap(Vector2d newPosition, Vector2d lowerLeft, Vector2d upperRight){return newPosition.x == upperRight.x+1 || newPosition.x == lowerLeft.x-1 || newPosition.y == lowerLeft.y-1 || newPosition.y == upperRight.x+1;}
     private Vector2d validateMove(Vector2d newPosition, Vector2d lowerLeft, Vector2d upperRight) {
         if (goesOutsiedeMap(newPosition, lowerLeft, upperRight)) {
@@ -109,28 +129,34 @@ public class Animal implements IMapElement, Comparable{
         return newPosition;
     }
     public Animal procreate(Animal other){
-//        System.out.println("genotyp rodzica 1");
-//        System.out.println(this.getGeontype());
-//        System.out.println("energia rodzica 1");
-//        System.out.println(this.getEnergy());
-//        System.out.println("genotyp rodzica 2");
-//        System.out.println(other.getGeontype());
-//        System.out.println("energia rodzica 2");
-//        System.out.println(other.getEnergy());
 
         List<Integer> newBornGentype = new ArrayList<>();
         newBornGentype.addAll(this.geontype.subList(0,this.energy/(this.energy+other.getEnergy())+1));
         newBornGentype.addAll(this.geontype.subList(this.energy/(this.energy+other.getEnergy())+1,32));
-//        System.out.println("genotyp dziecka");
-//        System.out.println(newBornGentype);
-//        System.out.println("energia dziecka");
-//        System.out.println((this.energy+other.getEnergy())/4);
-//        System.out.println("-----------------------------------");
+        Animal newBorn = new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
         this.energy -= this.energy/4;
         other.energy -= other.energy/4;
-        this.childrenNumber += 1;
-        other.childrenNumber += 1;
-        return new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
+        if (this.followed) {
+            this.descendantsNumber += 1;
+            this.childrenNumber += 1;
+            newBorn.addAnimalObserver(this);
+            this.observatedAnimals.add(newBorn);
+        }
+        if (this.animalObserver != null){
+            this.animalObserver.childBorn();
+            newBorn.addAnimalObserver(this.animalObserver);
+        }
+        if (other.followed) {
+            other.childrenNumber += 1;
+            other.descendantsNumber += 1;
+            newBorn.addAnimalObserver(other.animalObserver);
+            other.observatedAnimals.add(newBorn);
+        }
+        if (other.animalObserver != null){
+            other.animalObserver.childBorn();
+            newBorn.addAnimalObserver(other);
+        }
+        return newBorn;
     }
 
     @Override
@@ -144,5 +170,10 @@ public class Animal implements IMapElement, Comparable{
             return -1;
         }
         return cmp;
+    }
+
+    @Override
+    public void childBorn() {
+        this.descendantsNumber += 1;
     }
 }
