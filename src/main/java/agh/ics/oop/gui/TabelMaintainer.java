@@ -9,7 +9,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class TabelMaintainer implements IEngineObserver {
     TableView table;
     Animal followedAnimal;
-    public TabelMaintainer(){
+
+    public TabelMaintainer() {
         this.table = new TableView();
 
         TableColumn<Animal, String> positonColumn = new TableColumn<>("Position");
@@ -42,10 +43,12 @@ public class TabelMaintainer implements IEngineObserver {
         table.setMaxHeight(100);
     }
 
-    public TableView createTable(){return this.table;}
+    public TableView createTable() {
+        return this.table;
+    }
 
-    public void setFollowedAnimal(Animal newAnimal){
-        if (this.followedAnimal != null){
+    public void setFollowedAnimal(Animal newAnimal) {
+        if (this.followedAnimal != null) {
             this.followedAnimal.changeFollowingStatus();
         }
         table.getItems().remove(this.followedAnimal);
@@ -54,14 +57,18 @@ public class TabelMaintainer implements IEngineObserver {
         table.getItems().add(newAnimal);
         updateTable();
     }
-    public void removeFollowedAnimal(){
+
+    public void removeFollowedAnimal() {
         table.getItems().remove(this.followedAnimal);
         updateTable();
         this.followedAnimal.changeFollowingStatus();
     }
 
-    public void updateTable(){this.table.refresh();}
+    public void updateTable() {
+        this.table.refresh();
+    }
 
     @Override
-    public void stepMade(Integer epoch, Integer grasNumber, Integer animalsNumber) {updateTable();}
+    public void stepMade(Integer epoch, Integer grasNumber, Integer animalsNumber, float avgEnergy, float avgChildrenNum, float avgLifeLength) {updateTable();}
 }
+

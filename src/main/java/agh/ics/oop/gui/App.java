@@ -160,6 +160,7 @@ public class App extends Application {
         TableView rectangularTable = recangularTableMaintainer.createTable();
         rectangularEngine.addObserver(recangularTableMaintainer);
 
+
         VBox flipedVBox = new VBox(grid1, flippedTable,  flippedLineChart);
         VBox rectangularVBox = new VBox(grid2, rectangularTable, rectanularLineChart);
 

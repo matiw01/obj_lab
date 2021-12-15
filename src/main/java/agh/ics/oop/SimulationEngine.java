@@ -18,11 +18,17 @@ public class SimulationEngine implements IEngine, IMapObserver {
     Vector2d jungleLowerLeft;
     Vector2d jungleUpperRight;
     Integer startEnergy;
+    float avgLifeLenght = 0;
+    float sumOfYearsLived = 0;
+    float numOfDeadAnimals = 0;
+    float avgEnergy;
+    float avgChildrenNum = 0;
     boolean magicStrategy;
     int magicCounter = 3;
     private final List<IEngineObserver> engineObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
     public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy, boolean magicStrategy){
+        this.avgEnergy = startEnergy;
         this.magicStrategy = magicStrategy;
         this.engineObservers = new ArrayList<IEngineObserver>();
         this.moveEnergy = moveEnergy;
@@ -57,7 +63,7 @@ public class SimulationEngine implements IEngine, IMapObserver {
         map.addGras();
         for (IEngineObserver engineObserver : engineObservers)
         {
-            engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals());
+            engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals(), avgEnergy, avgChildrenNum, avgLifeLenght);
         }
         if (magicStrategy && animalsList.size() <= 5 && magicCounter > 0){
             magicCounter -= 1;
@@ -81,8 +87,15 @@ public class SimulationEngine implements IEngine, IMapObserver {
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
     private void removeDeadAnimals(){
-        animalsList.removeIf(animal -> !animal.isAlive());
+        for (Animal animal : animalsList){
+            if (!animal.isAlive()){
+                Platform.runLater(() -> {animalsList.remove(animal);});
+                numOfDeadAnimals += (float) 1;
+                sumOfYearsLived += (float) animal.getAge();
+            }
+        }
         map.removeDeadAnimals();
+//        avgLifeLenght = sumOfYearsLived/numOfDeadAnimals;
     }
     public void addObserver(IEngineObserver engineObserver){
         this.engineObservers.add(engineObserver);
