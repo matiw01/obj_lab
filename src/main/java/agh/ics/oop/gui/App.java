@@ -14,6 +14,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -143,7 +144,29 @@ public class App extends Application {
         flippedYAxis.setLabel("");
 
         LineChart<Integer, Integer> flippedLineChart = new LineChart(flippedXAxis, flippedYAxis);
+        //fliped floppa info
 
+        TableView flippedFloppaTable = new TableView();
+
+        TableColumn<Animal, String> positonColumn = new TableColumn<>("Position");
+        positonColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
+
+        TableColumn<Animal, String> lifeLengthColumn = new TableColumn<>("Life length");
+        lifeLengthColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+
+        TableColumn<Animal, String> numberOfChildrenColumn = new TableColumn<>("Children");
+        numberOfChildrenColumn.setCellValueFactory(new PropertyValueFactory<>("childrenNumber"));
+
+        TableColumn<Animal, String> descendantsNumberColumn = new TableColumn<>("Descendants");
+        descendantsNumberColumn.setCellValueFactory(new PropertyValueFactory<>("descendantsNumber"));
+
+        flippedFloppaTable.getColumns().add(positonColumn);
+        flippedFloppaTable.getColumns().add(lifeLengthColumn);
+        flippedFloppaTable.getColumns().add(numberOfChildrenColumn);
+        flippedFloppaTable.getColumns().add(descendantsNumberColumn);
+
+//        example floppa added to
+//        flippedFloppaTable.getItems().add(new Animal(flippedMap, new Vector2d(1,1), new ArrayList<>(), 0,0,0));
 
         //rectangular chart
         NumberAxis rectanularXAxis = new NumberAxis();
@@ -154,7 +177,7 @@ public class App extends Application {
 
         LineChart<Integer, Integer> rectanularLineChart = new LineChart(rectanularXAxis, rectanularYAxis);
 
-        VBox flipedVBox = new VBox(grid1, flippedLineChart);
+        VBox flipedVBox = new VBox(grid1, flippedFloppaTable,  flippedLineChart);
         VBox rectangularVBox = new VBox(grid2, rectanularLineChart);
 
         HBox hBox = new HBox(flipedVBox, rectangularVBox);

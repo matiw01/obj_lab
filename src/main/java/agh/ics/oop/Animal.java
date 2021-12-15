@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Animal implements IMapElement, Comparable{
+    Integer age = 0;
+    private Integer childrenNumber = 0;
+    Integer descendantsNumber = 0;
     Integer moveEnergy;
     private boolean alive;
     private int energy;
@@ -78,6 +81,9 @@ public class Animal implements IMapElement, Comparable{
     public Vector2d getPosition() {return this.position;}
     public MapDirection getDirection(){return this.direction;}
     public Integer getEnergy(){return this.energy;}
+    public Integer getChildrenNumber(){return this.childrenNumber;}
+    public Integer getAge(){return this.age;}
+    public Integer getDescendantsNumber(){return this.descendantsNumber;}
     public  List<Integer> getGeontype(){return this.geontype;}
     public Integer getProcreateEnergy(){return this.procreareEnergy;}
     public boolean isAlive(){return this.alive;}
@@ -122,6 +128,8 @@ public class Animal implements IMapElement, Comparable{
 //        System.out.println("-----------------------------------");
         this.energy -= this.energy/4;
         other.energy -= other.energy/4;
+        this.childrenNumber += 1;
+        other.childrenNumber += 1;
         return new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
     }
 

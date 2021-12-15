@@ -95,6 +95,8 @@ public class GridCreator {
                 System.out.println(ex.toString());
             }
         });
+        //toggleButton grup
+
         //map labeling
         grid.getColumnConstraints().add(new ColumnConstraints(columnWidth));
         Label axisLabel = new Label("y\\x");
@@ -125,6 +127,7 @@ public class GridCreator {
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
                         grid.add(iv,i+1-lowerLeft.x,upperRight.y-j+1);
+                        //add floppa button alowing to show info about floppa
                     }
                     else {
                         Image img = new Image("grass.jpg");
