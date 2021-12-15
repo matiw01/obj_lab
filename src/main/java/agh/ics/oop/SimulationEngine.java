@@ -63,7 +63,7 @@ public class SimulationEngine implements IEngine, IMapObserver {
         map.addGras();
         for (IEngineObserver engineObserver : engineObservers)
         {
-            engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals(), avgEnergy, avgChildrenNum, avgLifeLenght);
+            engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals(), getAvgEnergy(), getAvgChildrenNum(), avgLifeLenght);
         }
         if (magicStrategy && animalsList.size() <= 5 && magicCounter > 0){
             magicCounter -= 1;
@@ -95,7 +95,9 @@ public class SimulationEngine implements IEngine, IMapObserver {
             }
         }
         map.removeDeadAnimals();
-//        avgLifeLenght = sumOfYearsLived/numOfDeadAnimals;
+        if(numOfDeadAnimals != 0){
+            avgLifeLenght = sumOfYearsLived/numOfDeadAnimals;
+        }
     }
     public void addObserver(IEngineObserver engineObserver){
         this.engineObservers.add(engineObserver);
@@ -105,4 +107,28 @@ public class SimulationEngine implements IEngine, IMapObserver {
         Platform.runLater(()->{animalsList.add(animal);});
     }
     public Integer getAnimalsNum(){return animalsList.size();}
+    private float getAvgEnergy(){
+        int animalsNum = 0;
+        int animalsEnergy = 0;
+        for (Animal animal : animalsList){
+            animalsNum += 1;
+            animalsEnergy += animal.getEnergy();
+        }
+        if (animalsNum>0) {
+            return animalsEnergy / animalsNum;
+        }
+        return 0;
+    }
+    private float getAvgChildrenNum(){
+        int animalsNum = 0;
+        int animalsChildren = 0;
+        for (Animal animal : animalsList){
+            animalsNum += 1;
+            animalsChildren += animal.allchildren;
+        }
+        if (animalsNum>0) {
+            return animalsChildren / animalsNum;
+        }
+        return 0;
+    }
 }

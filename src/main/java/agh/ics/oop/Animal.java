@@ -9,6 +9,7 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
     private final List<Animal> observatedAnimals = new ArrayList<>();
     private IAnimalObserver animalObserver;
     public Integer age = 0;
+    public Integer allchildren = 0;
     private Integer childrenNumber = 0;
     Integer descendantsNumber = 0;
     private boolean followed;
@@ -137,6 +138,8 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
         Animal newBorn = new Animal(this.map, this.position, newBornGentype,(this.energy+other.getEnergy())/4, this.procreareEnergy, this.moveEnergy);
         this.energy -= this.energy/4;
         other.energy -= other.energy/4;
+        this.allchildren += 1;
+        other.allchildren += 1;
         if (this.followed) {
             this.descendantsNumber += 1;
             this.childrenNumber += 1;
