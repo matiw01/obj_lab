@@ -24,6 +24,9 @@ public class TabelMaintainer implements IEngineObserver {
         TableColumn<Animal, String> descendantsNumberColumn = new TableColumn<>("Descendants");
         descendantsNumberColumn.setCellValueFactory(new PropertyValueFactory<>("descendantsNumber"));
 
+        TableColumn<Animal, String> genotypeColumn = new TableColumn<>("Genotype");
+        genotypeColumn.setCellValueFactory(new PropertyValueFactory<>("genotype"));
+
         TableColumn<Animal, String> dateOfDeathColum = new TableColumn<>("Death");
         dateOfDeathColum.setCellValueFactory(new PropertyValueFactory<>("deathEpoch"));
 
@@ -31,7 +34,12 @@ public class TabelMaintainer implements IEngineObserver {
         table.getColumns().add(lifeLengthColumn);
         table.getColumns().add(numberOfChildrenColumn);
         table.getColumns().add(descendantsNumberColumn);
+        table.getColumns().add(genotypeColumn);
         table.getColumns().add(dateOfDeathColum);
+
+
+        table.setMaxWidth(720);
+        table.setMaxHeight(100);
     }
 
     public TableView createTable(){return this.table;}

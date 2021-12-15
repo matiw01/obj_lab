@@ -92,6 +92,7 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
     public Integer getDescendantsNumber(){return this.descendantsNumber;}
     public  List<Integer> getGeontype(){return this.geontype;}
     public Integer getProcreateEnergy(){return this.procreareEnergy;}
+    public List<Integer> getGenotype(){return this.geontype;}
     public boolean isAlive(){return this.alive;}
     public String toString(){return ""+getDirection();}
     public void changeFollowingStatus(){

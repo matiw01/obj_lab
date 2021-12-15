@@ -160,12 +160,12 @@ public class GridCreator {
                 }
             }
         }
-        grid.add(new Label("grass number"),100,98);
-        grid.add(new Label(map.getGrassNum().toString()),100,99);
-        grid.add(new Label("animals number"),100,100);
-        grid.add(new Label(engine.getAnimalsNum().toString()),100,101);
-        grid.add(new Label("epoch"), 100, 102);
-        grid.add(new Label(epoch.toString()),100,103);
+        grid.add(new Label("grass number"),11,6);
+        grid.add(new Label(map.getGrassNum().toString()),11,7);
+        grid.add(new Label("animals number"),11,8);
+        grid.add(new Label(engine.getAnimalsNum().toString()),11,9);
+        grid.add(new Label("epoch"), 11, 10);
+        grid.add(new Label(epoch.toString()),11,11);
         grid.setGridLinesVisible(true);
     }
 }

@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.lang.Thread.sleep;
 
 public class App extends Application {
+    boolean magicStrategy;
     private Integer mapWidth;
     private Integer mapHeiht;
     private Integer jungleRatio;
@@ -78,12 +79,14 @@ public class App extends Application {
         Label l7 = new Label("Plant Energy");
         // these labels are set and used before the text fields as show below
 
-        pane.getChildren().addAll(l1, tf1, l2, tf2, l3, tf3, l4, tf4, l5, tf5, l6, tf6, l7, tf7);
+        // create a box to put the button in and name the button
+        CheckBox checkBox = new CheckBox("Chose magic strategy");
+        pane.getChildren().addAll(l1, tf1, l2, tf2, l3, tf3, l4, tf4, l5, tf5, l6, tf6, l7, tf7, checkBox);
         // call on the labels and text fields to be placed into the window
 
         VBox vBox = new VBox();
         Button startButton = new Button("Start");
-        // create a box to put the button in and name the button
+
 
         vBox.setAlignment(Pos.CENTER);
         vBox.getChildren().addAll(startButton);
@@ -107,6 +110,7 @@ public class App extends Application {
             startEnergy = Integer.valueOf(tf5.getText());
             moveEnergy = Integer.valueOf(tf6.getText());
             plantEnergy = Integer.valueOf(tf7.getText());
+            magicStrategy = checkBox.isSelected();
             if (mapWidth == null || mapHeiht == null || jungleRatio == null || numberOfAnimals == null || startEnergy == null || plantEnergy == null || moveEnergy == null) {
                 throw new IllegalArgumentException("You have to put in all arguments");
             }
@@ -126,8 +130,8 @@ public class App extends Application {
         Stage simulationStage = new Stage();
         flippedMap = new FlippedMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
         rectangularMap = new RectangularMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
-        flippedEngine = new SimulationEngine(flippedMap, numberOfAnimals, startEnergy, moveEnergy);
-        rectangularEngine = new SimulationEngine(rectangularMap, numberOfAnimals, startEnergy, moveEnergy);
+        flippedEngine = new SimulationEngine(flippedMap, numberOfAnimals, startEnergy, moveEnergy, magicStrategy);
+        rectangularEngine = new SimulationEngine(rectangularMap, numberOfAnimals, startEnergy, moveEnergy, magicStrategy);
         flippedMap.addObserver((IMapObserver) flippedEngine);
         rectangularMap.addObserver((IMapObserver) rectangularEngine);
         Vector2d[] corrners = rectangularMap.getCorrners();
@@ -145,33 +149,12 @@ public class App extends Application {
         TabelMaintainer flipedTableMaintainer = new TabelMaintainer();
         TableView flippedTable =flipedTableMaintainer.createTable();
         flippedEngine.addObserver(flipedTableMaintainer);
-//
-//        TableColumn<Animal, String> positonColumn = new TableColumn<>("Position");
-//        positonColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
-//
-//        TableColumn<Animal, String> lifeLengthColumn = new TableColumn<>("Life length");
-//        lifeLengthColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
-//
-//        TableColumn<Animal, String> numberOfChildrenColumn = new TableColumn<>("Children");
-//        numberOfChildrenColumn.setCellValueFactory(new PropertyValueFactory<>("childrenNumber"));
-//
-//        TableColumn<Animal, String> descendantsNumberColumn = new TableColumn<>("Descendants");
-//        descendantsNumberColumn.setCellValueFactory(new PropertyValueFactory<>("descendantsNumber"));
-//
-//        flippedFloppaTable.getColumns().add(positonColumn);
-//        flippedFloppaTable.getColumns().add(lifeLengthColumn);
-//        flippedFloppaTable.getColumns().add(numberOfChildrenColumn);
-//        flippedFloppaTable.getColumns().add(descendantsNumberColumn);
-
-//        example floppa added to table
-//        Animal floppa = new Animal(flippedMap, new Vector2d(1,1), new ArrayList<>(), 0,0,0);
-//        flippedFloppaTable.getItems().add(floppa);
-
 
         //rectangular chart
         ChartMaintainer rectangularChartMaintainer = new ChartMaintainer("epoh","",0,numberOfAnimals);
         LineChart<Integer, Integer> rectanularLineChart = rectangularChartMaintainer.createChart();
         rectangularEngine.addObserver(rectangularChartMaintainer);
+
         //rectangular floppa info
         TabelMaintainer recangularTableMaintainer = new TabelMaintainer();
         TableView rectangularTable = recangularTableMaintainer.createTable();

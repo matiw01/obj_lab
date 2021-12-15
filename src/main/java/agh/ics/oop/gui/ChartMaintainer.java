@@ -22,7 +22,9 @@ public class ChartMaintainer implements IEngineObserver {
         yAxis.setLabel(yLabel);
 
         this.dataSeries1 = new XYChart.Series();
+        this.dataSeries1.setName("Grass");
         this.dataSeries2 = new XYChart.Series();
+        this.dataSeries2.setName("Animals");
 
         this.lineChart = new LineChart(xAxis, yAxis);
 

@@ -18,9 +18,12 @@ public class SimulationEngine implements IEngine, IMapObserver {
     Vector2d jungleLowerLeft;
     Vector2d jungleUpperRight;
     Integer startEnergy;
-    private List<IEngineObserver> engineObservers;
+    boolean magicStrategy;
+    int magicCounter = 3;
+    private final List<IEngineObserver> engineObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
-    public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy){
+    public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy, boolean magicStrategy){
+        this.magicStrategy = magicStrategy;
         this.engineObservers = new ArrayList<IEngineObserver>();
         this.moveEnergy = moveEnergy;
         this.animalsNum = animalsNum;
@@ -56,7 +59,24 @@ public class SimulationEngine implements IEngine, IMapObserver {
         {
             engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals());
         }
-
+        if (magicStrategy && animalsList.size() <= 5 && magicCounter > 0){
+            magicCounter -= 1;
+            List<Vector2d> freePositions = new ArrayList<>();
+            for(int i = 0; i <= upperRight.x; i++){
+                for (int j = 0; j <= upperRight.y; j++){
+                    Vector2d position = new Vector2d(i,j);
+                    if (!map.isOccupied(position)){
+                        freePositions.add(position);
+                    }
+                }
+            }
+            Collections.shuffle(freePositions);
+            for (int i = 0 ; i < 5; i++){
+                Animal animal = new Animal(map, freePositions.get(i), new ArrayList<>(), startEnergy, startEnergy/2, moveEnergy);
+                animalsList.add(animal);
+                map.place(animal);
+            }
+        }
     }
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
