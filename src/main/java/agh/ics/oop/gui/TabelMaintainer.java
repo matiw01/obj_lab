@@ -45,8 +45,12 @@ public class TabelMaintainer implements IEngineObserver {
     public TableView createTable(){return this.table;}
 
     public void setFollowedAnimal(Animal newAnimal){
+        if (this.followedAnimal != null){
+            this.followedAnimal.changeFollowingStatus();
+        }
         table.getItems().remove(this.followedAnimal);
         this.followedAnimal = newAnimal;
+        this.followedAnimal.changeFollowingStatus();
         table.getItems().add(newAnimal);
         updateTable();
     }

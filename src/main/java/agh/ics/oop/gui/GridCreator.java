@@ -136,7 +136,6 @@ public class GridCreator {
                             toggleFloppaButton.setSelected(((Animal) object).isFollowed());
                             toggleFloppaButton.setOnAction(event -> {
                                 if (toggleFloppaButton.isSelected()) {
-                                        ((Animal) object).changeFollowingStatus();
                                         tabelMaintainer.setFollowedAnimal((Animal) object);
                                         tabelMaintainer.updateTable();
                                 }
