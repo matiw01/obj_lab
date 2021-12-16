@@ -6,6 +6,7 @@ import agh.ics.oop.IWorldMap;
 import agh.ics.oop.Vector2d;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -103,6 +104,9 @@ public class GridCreator {
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
                         grid.add(iv,i+1-lowerLeft.x,upperRight.y-j+1);
+                        if (!running.get()){
+                            Button floppaButton = new Button("floppa");
+                        }
                     }
                     else {
                         Image img = new Image("grass.jpg");
