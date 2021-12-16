@@ -41,6 +41,8 @@ public class App extends Application {
     private SimulationEngine rectangularEngine;
     private Vector2d lowerLeft;
     private Vector2d upperRight;
+    AtomicBoolean flippedRunning;
+    AtomicBoolean rectangularRunning;
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
@@ -139,8 +141,8 @@ public class App extends Application {
         lowerLeft = corrners[0];
         upperRight = corrners[1];
 
-        GridPane grid1 = new GridPane();
-        GridPane grid2 = new GridPane();
+//        GridPane grid1 = new GridPane();
+//        GridPane grid2 = new GridPane();
         //flipped chart
         ChartMaintainer flippedChartManitainer = new ChartMaintainer("epoh", "",0,numberOfAnimals);
         LineChart<Integer, Integer> flippedLineChart = flippedChartManitainer.createChart();
@@ -184,16 +186,38 @@ public class App extends Application {
             }
         });
 
-        VBox flipedVBox = new VBox(grid1, flippedStatisticsButton, flippedTable,  flippedLineChart);
-        VBox rectangularVBox = new VBox(grid2, rectangularStatisticsButton, rectangularTable, rectanularLineChart);
+        flippedRunning = new AtomicBoolean();
+        rectangularRunning = new AtomicBoolean();
+        Thread flippedThread = new Thread((Runnable) flippedEngine);
+        flippedThread.start();
+        Thread rectangularThread = new Thread((Runnable) rectangularEngine);
+        rectangularThread.start();
+        GridCreator flippedgridCreator = new GridCreator(flippedMap, flipedTableMaintainer, flippedEngine, flippedRunning);
+        GridCreator rectangularGridCreator = new GridCreator(rectangularMap, recangularTableMaintainer, rectangularEngine, rectangularRunning);
+        GridPane flippedGrid = flippedgridCreator.createGrid();
+        GridPane rectangularGrid = rectangularGridCreator.createGrid();
+        //togle button starting and stoping flipedMap
+        ToggleButton flippedToggleButon = new ToggleButton("start");
+        flippedToggleButon.setOnAction(event -> {
+            flippedRunning.set(flippedToggleButon.isSelected());
+            flippedEngine.setShouldRun(flippedToggleButon.isSelected());
+        });
+        //togle button starting and stoping rectangularMap
+        ToggleButton rectangularToggleButon = new ToggleButton("start");
+        rectangularToggleButon.setOnAction(event -> {
+            rectangularRunning.set(rectangularToggleButon.isSelected());
+            rectangularEngine.setShouldRun(rectangularToggleButon.isSelected());
+        });
+        HBox flippedControlButtons = new HBox(flippedStatisticsButton, flippedToggleButon);
 
+        HBox recangularControlButtons = new HBox(rectangularStatisticsButton, rectangularToggleButon);
+        flippedgridCreator.updateGrid(0);
+        rectangularGridCreator.updateGrid(0);
+        flippedEngine.addObserver(flippedgridCreator);
+        rectangularEngine.addObserver(rectangularGridCreator);
+        VBox flipedVBox = new VBox(flippedGrid, flippedControlButtons, flippedTable,  flippedLineChart);
+        VBox rectangularVBox = new VBox(rectangularGrid, recangularControlButtons, rectangularTable, rectanularLineChart);
         HBox hBox = new HBox(flipedVBox, rectangularVBox);
-        AtomicBoolean flippefRunning = new AtomicBoolean();
-        AtomicBoolean rectangularRunning = new AtomicBoolean();
-        GridCreator gridflippedCreator = new GridCreator(flippedMap, flipedTableMaintainer, grid1, flippedEngine, flippefRunning);
-        GridCreator gridrectangularCreator = new GridCreator(rectangularMap, recangularTableMaintainer , grid2, rectangularEngine, rectangularRunning);
-        gridflippedCreator.createGrid(true);
-        gridrectangularCreator.createGrid(true);
         Scene scene = new Scene(hBox, 1500, 1000);
         simulationStage.setScene(scene);
         simulationStage.setFullScreen(true);

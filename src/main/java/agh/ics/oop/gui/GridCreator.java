@@ -1,9 +1,6 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.Animal;
-import agh.ics.oop.IEngine;
-import agh.ics.oop.IWorldMap;
-import agh.ics.oop.Vector2d;
+import agh.ics.oop.*;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.chart.LineChart;
@@ -22,23 +19,22 @@ import javafx.scene.layout.VBox;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GridCreator {
+public class GridCreator implements IEngineObserver {
 
     AtomicBoolean running;
-    IEngine engine;
+    SimulationEngine engine;
     GridPane grid;
     Vector2d lowerLeft;
     Vector2d upperRight;
     IWorldMap map;
     int columnWidth = 50;
     int rowWidth = 50;
-    Integer epoch = 0;
     TabelMaintainer tabelMaintainer;
-    public GridCreator(IWorldMap map,TabelMaintainer tabelMaintainer, GridPane grid, IEngine engine, AtomicBoolean running){
+    public GridCreator(IWorldMap map,TabelMaintainer tabelMaintainer, SimulationEngine engine, AtomicBoolean running){
+        this.grid = new GridPane();
         this.tabelMaintainer = tabelMaintainer;
         this.running = running;
         this.engine = engine;
-        this.grid = grid;
         this.map = map;
         Vector2d[] corrners = map.getCorrners();
         this.lowerLeft = corrners[0];
@@ -48,43 +44,46 @@ public class GridCreator {
 
     }
 
-
-    public void createGrid(boolean start){
-        epoch += 1;
+    public GridPane createGrid(){return this.grid;}
+    public void updateGrid(Integer epoch){
         ToggleButton toggleButton = new ToggleButton("Start");
-        toggleButton.setSelected(!start);
-        grid.add(toggleButton,900,10,100,100);
+//        grid.add(toggleButton,900,10,100,100);
         //button starting or stoping simulation
-        toggleButton.setOnAction(event -> {
-            running.set(toggleButton.isSelected());
-            try{
-                if( running.get()){
-                    Thread t = new Thread(() -> {
-                        while (running.get()) {
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException ex) {
-                                System.out.println(ex);
-                            }
-                            Platform.runLater(() -> {
-                                engine.run();
-                                grid.setGridLinesVisible(false);
-                                grid.getColumnConstraints().clear();
-                                grid.getRowConstraints().clear();
-                                grid.getChildren().clear();
-                                grid.setGridLinesVisible(true);
-                                this.createGrid(!running.get());
-                            });
-                        }
-                    });
-                    t.setDaemon(true);
-                    t.start();
-                }
-            }
-            catch (Exception ex){
-                System.out.println(ex.toString());
-            }
-        });
+//        toggleButton.setOnAction(event -> {
+//            running.set(toggleButton.isSelected());
+//            try{
+//                if( running.get()){
+//                    Thread t = new Thread(() -> {
+//                        while (running.get()) {
+//                            try {
+//                                Thread.sleep(500);
+//                            } catch (InterruptedException ex) {
+//                                System.out.println(ex);
+//                            }
+//                            Platform.runLater(() -> {
+//                                engine.run();
+//                                grid.setGridLinesVisible(false);
+//                                grid.getColumnConstraints().clear();
+//                                grid.getRowConstraints().clear();
+//                                grid.getChildren().clear();
+//                                grid.setGridLinesVisible(true);
+//                                this.updateGrid();
+//                            });
+//                        }
+//                    });
+//                    t.setDaemon(true);
+//                    t.start();
+//                }
+//            }
+//            catch (Exception ex){
+//                System.out.println(ex.toString());
+//            }
+//        });
+        grid.setGridLinesVisible(false);
+        grid.getColumnConstraints().clear();
+        grid.getRowConstraints().clear();
+        grid.getChildren().clear();
+        grid.setGridLinesVisible(true);
         //toggleButton grup
         ToggleGroup toggleFloppaGroup = new ToggleGroup();
         //map labeling
@@ -127,7 +126,7 @@ public class GridCreator {
                         }
                         grid.add(iv,i+1-lowerLeft.x,upperRight.y-j+1);
                         //add floppa button alowing to show info about floppa
-                        if(!running.get()) {
+                        if(this.engine.getShouldRun()) {
                             ToggleButton toggleFloppaButton = new ToggleButton();
                             toggleFloppaButton.setToggleGroup(toggleFloppaGroup);
                             toggleFloppaButton.setBackground(null);
@@ -166,5 +165,10 @@ public class GridCreator {
         grid.add(new Label("epoch"), 11, 10);
         grid.add(new Label(epoch.toString()),11,11);
         grid.setGridLinesVisible(true);
+    }
+
+    @Override
+    public void stepMade(Integer epoch, Integer grasNumber, Integer animalsNumber, float avgEnergy, float avgChildrenNum, float avgLifeLength) {
+       Platform.runLater(() -> {updateGrid(epoch);});
     }
 }

@@ -5,7 +5,7 @@ import javafx.application.Platform;
 
 import java.util.*;
 
-public class SimulationEngine implements IEngine, IMapObserver {
+public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     private final IWorldMap map;
     Integer epoch = 0;
     int animalsNum;
@@ -22,6 +22,7 @@ public class SimulationEngine implements IEngine, IMapObserver {
     float avgChildrenNum = 0;
     boolean magicStrategy;
     int magicCounter = 3;
+    boolean shouldRun = false;
     List<String[]> Statistics = new ArrayList<>();
     private final List<IEngineObserver> engineObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
@@ -50,48 +51,63 @@ public class SimulationEngine implements IEngine, IMapObserver {
 
     @Override
     public void run(){
-        epoch += 1;
-        removeDeadAnimals();
-        map.animalsEat();
-        for (Animal animal : animalsList){
-            animal.move();
-            animal.dieIfNoEnergy(epoch);
-        }
-        map.animalsProcreate();
-        map.addGras();
-        for (IEngineObserver engineObserver : engineObservers)
-        {
-            engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals(), getAvgEnergy(), getAvgChildrenNum(), avgLifeLenght);
-        }
-        if (magicStrategy && animalsList.size() <= 5 && magicCounter > 0){
-            magicCounter -= 1;
-            List<Vector2d> freePositions = new ArrayList<>();
-            for(int i = 0; i <= upperRight.x; i++){
-                for (int j = 0; j <= upperRight.y; j++){
-                    Vector2d position = new Vector2d(i,j);
-                    if (!map.isOccupied(position)){
-                        freePositions.add(position);
+            while (true) {
+                if (shouldRun) {
+                epoch += 1;
+                removeDeadAnimals();
+                map.animalsEat();
+                for (Animal animal : animalsList) {
+                    animal.move();
+                    animal.dieIfNoEnergy(epoch);
+                }
+                map.animalsProcreate();
+                map.addGras();
+                for (IEngineObserver engineObserver : engineObservers) {
+                    engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals(), getAvgEnergy(), getAvgChildrenNum(), avgLifeLenght);
+                }
+                if (magicStrategy && animalsList.size() <= 5 && magicCounter > 0) {
+                    magicCounter -= 1;
+                    List<Vector2d> freePositions = new ArrayList<>();
+                    for (int i = 0; i <= upperRight.x; i++) {
+                        for (int j = 0; j <= upperRight.y; j++) {
+                            Vector2d position = new Vector2d(i, j);
+                            if (!map.isOccupied(position)) {
+                                freePositions.add(position);
+                            }
+                        }
+                    }
+                    Collections.shuffle(freePositions);
+                    for (int i = 0; i < 5; i++) {
+                        Animal animal = new Animal(map, freePositions.get(i), new ArrayList<>(), startEnergy, startEnergy / 2, moveEnergy);
+                        animalsList.add(animal);
+                        map.place(animal);
                     }
                 }
+                Statistics.add(new String[]{map.getGrassNum().toString(), map.getNumberOfAnimals().toString(), getAvgEnergy().toString(), getAvgChildrenNum().toString()});
             }
-            Collections.shuffle(freePositions);
-            for (int i = 0 ; i < 5; i++){
-                Animal animal = new Animal(map, freePositions.get(i), new ArrayList<>(), startEnergy, startEnergy/2, moveEnergy);
-                animalsList.add(animal);
-                map.place(animal);
-            }
+                try {
+                    engineSleep(300);
+                }catch (InterruptedException ex){
+                    System.out.println(ex);
+                }
+
         }
-        Statistics.add(new String[] {map.getGrassNum().toString(), map.getNumberOfAnimals().toString(), getAvgEnergy().toString(), getAvgChildrenNum().toString()});
     }
+    public void engineSleep(int len) throws InterruptedException {Thread.sleep(len);}
+    public void setShouldRun(boolean shouldRun) {this.shouldRun = shouldRun;}
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
     private void removeDeadAnimals(){
+        List<Animal> removeList = new ArrayList<Animal>();
         for (Animal animal : animalsList){
             if (!animal.isAlive()){
-                Platform.runLater(() -> {animalsList.remove(animal);});
+                removeList.add(animal);
                 numOfDeadAnimals += (float) 1;
                 sumOfYearsLived += (float) animal.getAge();
             }
+        }
+        for (Animal animal : removeList){
+            animalsList.remove(animal);
         }
         map.removeDeadAnimals();
         if(numOfDeadAnimals != 0){
@@ -104,8 +120,9 @@ public class SimulationEngine implements IEngine, IMapObserver {
     }
     @Override
     public void animalAdded(Animal animal) {
-        Platform.runLater(()->{animalsList.add(animal);});
+        animalsList.add(animal);
     }
+    public boolean getShouldRun(){return this.shouldRun;}
     public Integer getAnimalsNum(){return animalsList.size();}
     private Float getAvgEnergy(){
         float animalsNum = 0;
