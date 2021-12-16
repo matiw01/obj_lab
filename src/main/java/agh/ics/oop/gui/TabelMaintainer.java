@@ -62,6 +62,7 @@ public class TabelMaintainer implements IEngineObserver {
         table.getItems().remove(this.followedAnimal);
         updateTable();
         this.followedAnimal.changeFollowingStatus();
+        this.followedAnimal = null;
     }
 
     public void updateTable() {

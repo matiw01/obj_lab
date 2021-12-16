@@ -6,9 +6,12 @@ import agh.ics.oop.IWorldMap;
 import agh.ics.oop.Vector2d;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
-import javafx.scene.control.Button;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -16,9 +19,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GridCreator {
+
     AtomicBoolean running;
     IEngine engine;
     GridPane grid;
@@ -28,7 +33,9 @@ public class GridCreator {
     int columnWidth = 50;
     int rowWidth = 50;
     Integer epoch = 0;
-    public GridCreator(IWorldMap map, GridPane grid, IEngine engine,AtomicBoolean running){
+    TabelMaintainer tabelMaintainer;
+    public GridCreator(IWorldMap map,TabelMaintainer tabelMaintainer, GridPane grid, IEngine engine, AtomicBoolean running){
+        this.tabelMaintainer = tabelMaintainer;
         this.running = running;
         this.engine = engine;
         this.grid = grid;
@@ -37,7 +44,11 @@ public class GridCreator {
         this.lowerLeft = corrners[0];
         this.upperRight = corrners[1];
 
+
+
     }
+
+
     public void createGrid(boolean start){
         epoch += 1;
         ToggleButton toggleButton = new ToggleButton("Start");
@@ -51,7 +62,7 @@ public class GridCreator {
                     Thread t = new Thread(() -> {
                         while (running.get()) {
                             try {
-                                Thread.sleep(100);
+                                Thread.sleep(500);
                             } catch (InterruptedException ex) {
                                 System.out.println(ex);
                             }
@@ -74,6 +85,8 @@ public class GridCreator {
                 System.out.println(ex.toString());
             }
         });
+        //toggleButton grup
+        ToggleGroup toggleFloppaGroup = new ToggleGroup();
         //map labeling
         grid.getColumnConstraints().add(new ColumnConstraints(columnWidth));
         Label axisLabel = new Label("y\\x");
@@ -103,9 +116,34 @@ public class GridCreator {
                         iv.setImage(img);
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
+                        if (((Animal) object).isFollowed()){
+                            ColorAdjust colorAdjust = new ColorAdjust();
+                            colorAdjust.setContrast(0.4);
+                            colorAdjust.setHue(-0.05);
+                            colorAdjust.setBrightness(0.4);
+                            colorAdjust.setSaturation(0.8);
+                            iv.setEffect(colorAdjust);
+                        }
                         grid.add(iv,i+1-lowerLeft.x,upperRight.y-j+1);
-                        if (!running.get()){
-                            Button floppaButton = new Button("floppa");
+                        //add floppa button alowing to show info about floppa
+                        if(!running.get()) {
+                            ToggleButton toggleFloppaButton = new ToggleButton();
+                            toggleFloppaButton.setToggleGroup(toggleFloppaGroup);
+                            toggleFloppaButton.setBackground(null);
+                            toggleFloppaButton.setPrefWidth(columnWidth);
+                            toggleFloppaButton.setPrefHeight(rowWidth);
+                            grid.add(toggleFloppaButton, i + 1 - lowerLeft.x, upperRight.y - j + 1);
+                            toggleFloppaButton.setSelected(((Animal) object).isFollowed());
+                            toggleFloppaButton.setOnAction(event -> {
+                                if (toggleFloppaButton.isSelected()) {
+                                    tabelMaintainer.setFollowedAnimal((Animal) object);
+                                    tabelMaintainer.updateTable();
+                                }
+                                else {
+                                    tabelMaintainer.removeFollowedAnimal();
+                                    tabelMaintainer.updateTable();
+                                }
+                            });
                         }
                     }
                     else {
@@ -121,12 +159,12 @@ public class GridCreator {
                 }
             }
         }
-        grid.add(new Label("grass number"),100,98);
-        grid.add(new Label(map.getGrassNum().toString()),100,99);
-        grid.add(new Label("animals number"),100,100);
-        grid.add(new Label(engine.getAnimalsNum().toString()),100,101);
-        grid.add(new Label("epoch"), 100, 102);
-        grid.add(new Label(epoch.toString()),100,103);
+        grid.add(new Label("grass number"),11,6);
+        grid.add(new Label(map.getGrassNum().toString()),11,7);
+        grid.add(new Label("animals number"),11,8);
+        grid.add(new Label(engine.getAnimalsNum().toString()),11,9);
+        grid.add(new Label("epoch"), 11, 10);
+        grid.add(new Label(epoch.toString()),11,11);
         grid.setGridLinesVisible(true);
     }
 }

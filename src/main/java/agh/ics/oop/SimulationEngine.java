@@ -3,10 +3,7 @@ package agh.ics.oop;
 
 import javafx.application.Platform;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class SimulationEngine implements IEngine, IMapObserver {
     private final IWorldMap map;
@@ -25,6 +22,7 @@ public class SimulationEngine implements IEngine, IMapObserver {
     float avgChildrenNum = 0;
     boolean magicStrategy;
     int magicCounter = 3;
+    List<String[]> Statistics = new ArrayList<>();
     private final List<IEngineObserver> engineObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
     public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy, boolean magicStrategy){
@@ -83,6 +81,7 @@ public class SimulationEngine implements IEngine, IMapObserver {
                 map.place(animal);
             }
         }
+        Statistics.add(new String[] {map.getGrassNum().toString(), map.getNumberOfAnimals().toString(), getAvgEnergy().toString(), getAvgChildrenNum().toString()});
     }
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
@@ -101,15 +100,16 @@ public class SimulationEngine implements IEngine, IMapObserver {
     }
     public void addObserver(IEngineObserver engineObserver){
         this.engineObservers.add(engineObserver);
+//        System.out.println(engineObservers);
     }
     @Override
     public void animalAdded(Animal animal) {
         Platform.runLater(()->{animalsList.add(animal);});
     }
     public Integer getAnimalsNum(){return animalsList.size();}
-    private float getAvgEnergy(){
-        int animalsNum = 0;
-        int animalsEnergy = 0;
+    private Float getAvgEnergy(){
+        float animalsNum = 0;
+        float animalsEnergy = 0;
         for (Animal animal : animalsList){
             animalsNum += 1;
             animalsEnergy += animal.getEnergy();
@@ -117,11 +117,11 @@ public class SimulationEngine implements IEngine, IMapObserver {
         if (animalsNum>0) {
             return animalsEnergy / animalsNum;
         }
-        return 0;
+        return 0.0f;
     }
-    private float getAvgChildrenNum(){
-        int animalsNum = 0;
-        int animalsChildren = 0;
+    private Float getAvgChildrenNum(){
+        float animalsNum = 0;
+        float animalsChildren = 0;
         for (Animal animal : animalsList){
             animalsNum += 1;
             animalsChildren += animal.allchildren;
@@ -129,6 +129,6 @@ public class SimulationEngine implements IEngine, IMapObserver {
         if (animalsNum>0) {
             return animalsChildren / animalsNum;
         }
-        return 0;
+        return 0f;
     }
 }

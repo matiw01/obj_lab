@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -117,7 +118,7 @@ public class App extends Application {
             primaryStage.close();
             try {
                 Simulation();
-            } catch (InterruptedException ex) {
+            } catch (InterruptedException | IOException ex) {
                 System.out.println(ex.toString());
                 System.exit(0);
             }
@@ -126,7 +127,7 @@ public class App extends Application {
 
     }
 
-    private void Simulation() throws InterruptedException {
+    private void Simulation() throws InterruptedException, IOException {
         Stage simulationStage = new Stage();
         flippedMap = new FlippedMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
         rectangularMap = new RectangularMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
@@ -160,9 +161,31 @@ public class App extends Application {
         TableView rectangularTable = recangularTableMaintainer.createTable();
         rectangularEngine.addObserver(recangularTableMaintainer);
 
+        //statistics handler
+        StatisticsHandler flippedStatisticsHandler = new StatisticsHandler();
+        StatisticsHandler rectangularStatisticsHandler = new StatisticsHandler();
+        flippedEngine.addObserver((IEngineObserver) flippedStatisticsHandler);
+        rectangularEngine.addObserver((IEngineObserver) rectangularStatisticsHandler);
+        //buttons for saveing statistics
+        Button flippedStatisticsButton = new Button("Save Statistics");
+        flippedStatisticsButton.setOnAction(event -> {
+            try {
+                flippedStatisticsHandler.saveIntoFile("statistics1");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        Button rectangularStatisticsButton = new Button("Save Statistics");
+        rectangularStatisticsButton.setOnAction(event -> {
+            try {
+                rectangularStatisticsHandler.saveIntoFile("statistics2");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
-        VBox flipedVBox = new VBox(grid1, flippedTable,  flippedLineChart);
-        VBox rectangularVBox = new VBox(grid2, rectangularTable, rectanularLineChart);
+        VBox flipedVBox = new VBox(grid1, flippedStatisticsButton, flippedTable,  flippedLineChart);
+        VBox rectangularVBox = new VBox(grid2, rectangularStatisticsButton, rectangularTable, rectanularLineChart);
 
         HBox hBox = new HBox(flipedVBox, rectangularVBox);
         AtomicBoolean flippefRunning = new AtomicBoolean();
