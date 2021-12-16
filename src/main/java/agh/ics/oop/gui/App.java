@@ -117,7 +117,7 @@ public class App extends Application {
             }
             primaryStage.close();
             try {
-                Simulation();
+                simulation();
             } catch (InterruptedException | IOException ex) {
                 System.out.println(ex.toString());
                 System.exit(0);
@@ -127,7 +127,7 @@ public class App extends Application {
 
     }
 
-    private void Simulation() throws InterruptedException, IOException {
+    private void simulation() throws InterruptedException, IOException {
         Stage simulationStage = new Stage();
         flippedMap = new FlippedMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);
         rectangularMap = new RectangularMap(mapWidth, mapHeiht, plantEnergy, jungleRatio);

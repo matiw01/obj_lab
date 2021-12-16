@@ -106,14 +106,15 @@ public class GridCreator {
             grid.getRowConstraints().add(new RowConstraints(rowWidth));
             GridPane.setHalignment(label, HPos.CENTER);
         }
+        Image animalImg = new Image("floppa1.jpg");
+        Image grassImg = new Image("grass.jpg");
         for (int i = lowerLeft.x; i<= upperRight.x; i++){
             for (int j = lowerLeft.y; j<= upperRight.y; j++){
                 if(map.isOccupied(new Vector2d(i,j))){
                     Object object = map.objectAt(new Vector2d(i,j));
                     if (object instanceof Animal){
-                        Image img = new Image("floppa1.jpg");
                         ImageView iv = new ImageView();
-                        iv.setImage(img);
+                        iv.setImage(animalImg);
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
                         if (((Animal) object).isFollowed()){
@@ -147,9 +148,8 @@ public class GridCreator {
                         }
                     }
                     else {
-                        Image img = new Image("grass.jpg");
                         ImageView iv = new ImageView();
-                        iv.setImage(img);
+                        iv.setImage(grassImg);
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
                         Label label = new Label(object.toString());
