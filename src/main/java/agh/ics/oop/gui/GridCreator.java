@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GridCreator implements IEngineObserver {
 
+    Image animalImg = new Image("floppa1.jpg");
+    Image grassImg = new Image("grass.jpg");
     AtomicBoolean running;
     SimulationEngine engine;
     GridPane grid;
@@ -46,39 +48,6 @@ public class GridCreator implements IEngineObserver {
 
     public GridPane createGrid(){return this.grid;}
     public void updateGrid(Integer epoch){
-        ToggleButton toggleButton = new ToggleButton("Start");
-//        grid.add(toggleButton,900,10,100,100);
-        //button starting or stoping simulation
-//        toggleButton.setOnAction(event -> {
-//            running.set(toggleButton.isSelected());
-//            try{
-//                if( running.get()){
-//                    Thread t = new Thread(() -> {
-//                        while (running.get()) {
-//                            try {
-//                                Thread.sleep(500);
-//                            } catch (InterruptedException ex) {
-//                                System.out.println(ex);
-//                            }
-//                            Platform.runLater(() -> {
-//                                engine.run();
-//                                grid.setGridLinesVisible(false);
-//                                grid.getColumnConstraints().clear();
-//                                grid.getRowConstraints().clear();
-//                                grid.getChildren().clear();
-//                                grid.setGridLinesVisible(true);
-//                                this.updateGrid();
-//                            });
-//                        }
-//                    });
-//                    t.setDaemon(true);
-//                    t.start();
-//                }
-//            }
-//            catch (Exception ex){
-//                System.out.println(ex.toString());
-//            }
-//        });
         grid.setGridLinesVisible(false);
         grid.getColumnConstraints().clear();
         grid.getRowConstraints().clear();
@@ -105,8 +74,7 @@ public class GridCreator implements IEngineObserver {
             grid.getRowConstraints().add(new RowConstraints(rowWidth));
             GridPane.setHalignment(label, HPos.CENTER);
         }
-        Image animalImg = new Image("floppa1.jpg");
-        Image grassImg = new Image("grass.jpg");
+
         for (int i = lowerLeft.x; i<= upperRight.x; i++){
             for (int j = lowerLeft.y; j<= upperRight.y; j++){
                 if(map.isOccupied(new Vector2d(i,j))){
@@ -116,17 +84,20 @@ public class GridCreator implements IEngineObserver {
                         iv.setImage(animalImg);
                         iv.setFitHeight(rowWidth);
                         iv.setFitWidth(columnWidth);
+                        ColorAdjust colorAdjust = new ColorAdjust();
+                        colorAdjust.setBrightness(Math.max(1f-((float)((Animal) object).getEnergy()/((float)((Animal) object).getProcreateEnergy()*2)),0));
+                        iv.setEffect(colorAdjust);
                         if (((Animal) object).isFollowed()){
-                            ColorAdjust colorAdjust = new ColorAdjust();
-                            colorAdjust.setContrast(0.4);
-                            colorAdjust.setHue(-0.05);
-                            colorAdjust.setBrightness(0.4);
-                            colorAdjust.setSaturation(0.8);
-                            iv.setEffect(colorAdjust);
+                            ColorAdjust colorAdjust1 = new ColorAdjust();
+                            colorAdjust1.setContrast(0.4);
+                            colorAdjust1.setHue(-0.05);
+                            colorAdjust1.setBrightness(0.4);
+                            colorAdjust1.setSaturation(0.8);
+                            iv.setEffect(colorAdjust1);
                         }
                         grid.add(iv,i+1-lowerLeft.x,upperRight.y-j+1);
                         //add floppa button alowing to show info about floppa
-                        if(this.engine.getShouldRun()) {
+                        if(!this.engine.getShouldRun()) {
                             ToggleButton toggleFloppaButton = new ToggleButton();
                             toggleFloppaButton.setToggleGroup(toggleFloppaGroup);
                             toggleFloppaButton.setBackground(null);
@@ -143,6 +114,7 @@ public class GridCreator implements IEngineObserver {
                                     tabelMaintainer.removeFollowedAnimal();
                                     tabelMaintainer.updateTable();
                                 }
+                                this.updateGrid(epoch);
                             });
                         }
                     }
@@ -168,7 +140,7 @@ public class GridCreator implements IEngineObserver {
     }
 
     @Override
-    public void stepMade(Integer epoch, Integer grasNumber, Integer animalsNumber, float avgEnergy, float avgChildrenNum, float avgLifeLength) {
+    public void stepMade(Integer epoch, Float grasNumber, Float animalsNumber, Float avgEnergy, Float avgChildrenNum, Float avgLifeLength) {
        Platform.runLater(() -> {updateGrid(epoch);});
     }
 }

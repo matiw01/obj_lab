@@ -49,7 +49,7 @@ public class ChartMaintainer implements IEngineObserver {
     }
 
     @Override
-    public void stepMade(Integer epoch, Integer grasNumber, Integer animalsNumber, float avgEnergy, float avgChildrenNum, float avgLifeLength) {
+    public void stepMade(Integer epoch, Float grasNumber, Float animalsNumber, Float avgEnergy, Float avgChildrenNum, Float avgLifeLength) {
         Platform.runLater(() -> {
             this.grass.getData().add(new XYChart.Data(epoch, grasNumber));
             this.animals.getData().add(new XYChart.Data(epoch, animalsNumber));

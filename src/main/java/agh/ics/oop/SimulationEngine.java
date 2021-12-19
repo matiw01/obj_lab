@@ -23,7 +23,7 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     boolean magicStrategy;
     int magicCounter = 3;
     boolean shouldRun = false;
-    List<String[]> Statistics = new ArrayList<>();
+    List<Integer[]> statistics = new ArrayList<>();
     private final List<IEngineObserver> engineObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
     public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy, boolean magicStrategy){
@@ -63,27 +63,9 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
                 map.animalsProcreate();
                 map.addGras();
                 for (IEngineObserver engineObserver : engineObservers) {
-                    engineObserver.stepMade(epoch, map.getGrassNum(), map.getNumberOfAnimals(), getAvgEnergy(), getAvgChildrenNum(), avgLifeLenght);
+                    engineObserver.stepMade(epoch, (float) map.getGrassNum(), (float)map.getNumberOfAnimals() , getAvgEnergy(), getAvgChildrenNum(), avgLifeLenght);
                 }
-                if (magicStrategy && animalsList.size() <= 5 && magicCounter > 0) {
-                    magicCounter -= 1;
-                    List<Vector2d> freePositions = new ArrayList<>();
-                    for (int i = 0; i <= upperRight.x; i++) {
-                        for (int j = 0; j <= upperRight.y; j++) {
-                            Vector2d position = new Vector2d(i, j);
-                            if (!map.isOccupied(position)) {
-                                freePositions.add(position);
-                            }
-                        }
-                    }
-                    Collections.shuffle(freePositions);
-                    for (int i = 0; i < 5; i++) {
-                        Animal animal = new Animal(map, freePositions.get(i), new ArrayList<>(), startEnergy, startEnergy / 2, moveEnergy);
-                        animalsList.add(animal);
-                        map.place(animal);
-                    }
-                }
-                Statistics.add(new String[]{map.getGrassNum().toString(), map.getNumberOfAnimals().toString(), getAvgEnergy().toString(), getAvgChildrenNum().toString()});
+                statistics.add(new Integer[]{map.getGrassNum(), map.getNumberOfAnimals()});
             }
                 try {
                     engineSleep(300);
@@ -108,6 +90,9 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
         }
         for (Animal animal : removeList){
             animalsList.remove(animal);
+            if (animalsList.size() == 5 && magicCounter > 0 && magicStrategy){
+                magicEvlution();
+            }
         }
         map.removeDeadAnimals();
         if(numOfDeadAnimals != 0){
@@ -121,6 +106,9 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     @Override
     public void animalAdded(Animal animal) {
         animalsList.add(animal);
+        if (animalsList.size() == 5 && magicCounter > 0 && magicStrategy){
+            magicEvlution();
+        }
     }
     public boolean getShouldRun(){return this.shouldRun;}
     public Integer getAnimalsNum(){return animalsList.size();}
@@ -147,5 +135,25 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
             return animalsChildren / animalsNum;
         }
         return 0f;
+    }
+    public int getEpoch(){return this.epoch;}
+
+    private void magicEvlution(){
+            magicCounter -= 1;
+            List<Vector2d> freePositions = new ArrayList<>();
+            for (int i = 0; i <= upperRight.x; i++) {
+                for (int j = 0; j <= upperRight.y; j++) {
+                    Vector2d position = new Vector2d(i, j);
+                    if (!map.isOccupied(position)) {
+                        freePositions.add(position);
+                    }
+                }
+            }
+            Collections.shuffle(freePositions);
+            for (int i = 0; i < 5; i++) {
+                Animal animal = new Animal(map, freePositions.get(i), animalsList.get(i).getGenotype(), startEnergy, startEnergy / 2, moveEnergy);
+                animalsList.add(animal);
+                map.place(animal);
+            }
     }
 }

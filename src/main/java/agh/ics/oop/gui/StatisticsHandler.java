@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StatisticsHandler implements IEngineObserver{
-    List<String[]> statistics = new ArrayList<>();
+    List<Float[]> statistics = new ArrayList<>();
     public StatisticsHandler(){
     }
     public String convertToCSV(String[] statistics) {
@@ -24,30 +24,57 @@ public class StatisticsHandler implements IEngineObserver{
     }
 
     public void saveIntoFile(String fileName) throws IOException {
-            try {
-                Path newFilePath = Paths.get(fileName);
-                Files.createFile(newFilePath);
+        Float avgGrasNum = summaryOfPos(0);
+        Float avgAnimalsNum = summaryOfPos(1);
+        Float avgSummaryEnergy = summaryOfPos(2);
+        Float avgSummaryChildrenNum = summaryOfPos(3);
+        Float avgSummaryLifeLength = summaryOfPos(4);
 
+        List<String[]> stringStatistics = new ArrayList<>();
+        for (Float[] stat : statistics){
+            String[] stringStat = new String[stat.length];
+            for (int i = 0; i < stat.length; i++){
+                stringStat[i] = stat[i].toString();
             }
-            catch (FileAlreadyExistsException ex){
-                File csvOutputfile = new File(fileName);
-                csvOutputfile.delete();
-                Path newFilePath = Paths.get(fileName);
-                Files.createFile(newFilePath);
-            }
-            File csvOutputFile = new File(fileName);
-            try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-                statistics.stream()
-                        .map(this::convertToCSV)
-                        .forEach(pw::println);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            stringStatistics.add(stringStat);
+        }
+        stringStatistics.add(new String[]{avgGrasNum.toString() , avgAnimalsNum.toString() , avgSummaryEnergy.toString() , avgSummaryChildrenNum.toString() , avgSummaryLifeLength.toString() });
+        try {
+            Path newFilePath = Paths.get(fileName);
+            Files.createFile(newFilePath);
 
+        }
+        catch (FileAlreadyExistsException ex){
+            File csvOutputfile = new File(fileName);
+            csvOutputfile.delete();
+            Path newFilePath = Paths.get(fileName);
+            Files.createFile(newFilePath);
+        }
+        File csvOutputFile = new File(fileName);
+        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+            stringStatistics.stream()
+                    .map(this::convertToCSV)
+                    .forEach(pw::println);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void stepMade(Integer epoch, Integer grasNumber, Integer animalsNumber, float avgEnergy, float avgChildrenNum, float avgLifeLength) {
-        statistics.add(new String[]{grasNumber.toString(), animalsNumber.toString(), ((Float) avgEnergy).toString(), ((Float) avgChildrenNum).toString(),((Float) avgLifeLength).toString()});
+    public void stepMade(Integer epoch, Float grasNumber, Float animalsNumber, Float avgEnergy, Float avgChildrenNum, Float avgLifeLength) {
+        statistics.add(new Float[]{(Float) grasNumber, animalsNumber, avgEnergy, avgChildrenNum,avgLifeLength});
     }
+
+    private Float summaryOfPos(int n){
+        Float num = 0f;
+        Float sum = 0f;
+        for (Float[] stat : statistics){
+            num += 1;
+            sum += stat[n];
+        }
+        return sum/num;
+    }
+
+
 }
+
