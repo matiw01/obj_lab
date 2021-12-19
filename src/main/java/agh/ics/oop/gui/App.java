@@ -148,9 +148,12 @@ public class App extends Application {
 //        GridPane grid1 = new GridPane();
 //        GridPane grid2 = new GridPane();
         //flipped chart
-        ChartMaintainer flippedChartManitainer = new ChartMaintainer("epoh", "",0,numberOfAnimals);
-        LineChart<Integer, Integer> flippedLineChart = flippedChartManitainer.createChart();
-        flippedEngine.addObserver(flippedChartManitainer);
+        ChartMaintainer flippedChartManitainer1 = new ChartMaintainer("epoh", "",true,true,false,true,true);
+        LineChart<Integer, Integer> flippedLineChart1 = flippedChartManitainer1.createChart();
+        ChartMaintainer flippedChartManitainer2 = new ChartMaintainer("epoh", "",false,false,true,false,false);
+        LineChart<Integer, Integer> flippedLineChart2 = flippedChartManitainer2.createChart();
+        flippedEngine.addObserver(flippedChartManitainer1);
+        flippedEngine.addObserver(flippedChartManitainer2);
 
         //fliped floppa info
         TabelMaintainer flipedTableMaintainer = new TabelMaintainer();
@@ -158,9 +161,13 @@ public class App extends Application {
         flippedEngine.addObserver(flipedTableMaintainer);
 
         //rectangular chart
-        ChartMaintainer rectangularChartMaintainer = new ChartMaintainer("epoh","",0,numberOfAnimals);
-        LineChart<Integer, Integer> rectanularLineChart = rectangularChartMaintainer.createChart();
+        ChartMaintainer rectangularChartMaintainer = new ChartMaintainer("epoh","",true,true,false,true,true);
+        LineChart<Integer, Integer> rectanularLineChart1 = rectangularChartMaintainer.createChart();
+        ChartMaintainer rectangularChartManitainer2 = new ChartMaintainer("epoh", "",false,false,true,false,false);
+        LineChart<Integer, Integer> rectangularLineChart2 = rectangularChartManitainer2.createChart();
         rectangularEngine.addObserver(rectangularChartMaintainer);
+        rectangularEngine.addObserver(rectangularChartManitainer2);
+
 
         //rectangular floppa info
         TabelMaintainer recangularTableMaintainer = new TabelMaintainer();
@@ -225,8 +232,14 @@ public class App extends Application {
         rectangularGridCreator.updateGrid(0);
         flippedEngine.addObserver(flippedgridCreator);
         rectangularEngine.addObserver(rectangularGridCreator);
-        VBox flipedVBox = new VBox(flippedGrid, flippedControlButtons, flippedTable,  flippedLineChart);
-        VBox rectangularVBox = new VBox(rectangularGrid, recangularControlButtons, rectangularTable, rectanularLineChart);
+        HBox flippedChartBox = new HBox(flippedLineChart1,flippedLineChart2);
+        flippedChartBox.setMaxWidth(1000);
+        VBox flipedVBox = new VBox(flippedGrid, flippedControlButtons, flippedTable,  flippedChartBox);
+
+        HBox rectangularChartBox = new HBox(rectanularLineChart1,rectangularLineChart2);
+        rectangularChartBox.setMaxWidth(1000);
+
+        VBox rectangularVBox = new VBox(rectangularGrid, recangularControlButtons, rectangularTable, rectangularChartBox);
         HBox hBox = new HBox(flipedVBox, rectangularVBox);
         Scene scene = new Scene(hBox, 1500, 1000);
         simulationStage.setScene(scene);

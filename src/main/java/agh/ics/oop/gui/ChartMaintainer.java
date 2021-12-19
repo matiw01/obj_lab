@@ -14,9 +14,21 @@ public class ChartMaintainer implements IEngineObserver {
     XYChart.Series<Integer,Integer> avgLifeLiength;
     XYChart.Series<Integer,Integer> avgChildrenNum;
 
+    boolean field1Active;
+    boolean field2Active;
+    boolean field3Active;
+    boolean field4Active;
+    boolean field5Active;
+
+
     String xLabel;
     String yLabel;
-    public ChartMaintainer(String xLabel, String yLabel, Integer startGrasNum, Integer startAnimalsNum){
+    public ChartMaintainer(String xLabel, String yLabel,boolean field1Active,boolean field2Active,boolean field3Active,boolean field4Active,boolean field5Active){
+        this.field1Active = field1Active;
+        this.field2Active = field2Active;
+        this.field3Active = field3Active;
+        this.field4Active = field4Active;
+        this.field5Active = field5Active;
         this.xLabel = xLabel;
         this.yLabel = yLabel;
         NumberAxis xAxis = new NumberAxis();
@@ -38,11 +50,12 @@ public class ChartMaintainer implements IEngineObserver {
 
         this.lineChart = new LineChart(xAxis, yAxis);
 
-        lineChart.getData().add(grass);
-        lineChart.getData().add(animals);
-        lineChart.getData().add(avgEnergy);
-        lineChart.getData().add(avgLifeLiength);
-        lineChart.getData().add(avgChildrenNum);
+        lineChart.setCreateSymbols(false);
+        if (field1Active) {lineChart.getData().add(grass);}
+        if(field2Active){lineChart.getData().add(animals);}
+        if(field3Active){lineChart.getData().add(avgEnergy);}
+        if(field4Active){lineChart.getData().add(avgLifeLiength);}
+        if(field5Active){lineChart.getData().add(avgChildrenNum);};
     }
     public LineChart createChart(){
         return lineChart;

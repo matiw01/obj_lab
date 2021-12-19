@@ -68,7 +68,7 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
                 statistics.add(new Integer[]{map.getGrassNum(), map.getNumberOfAnimals()});
             }
                 try {
-                    engineSleep(300);
+                    engineSleep(50);
                 }catch (InterruptedException ex){
                     System.out.println(ex);
                 }
