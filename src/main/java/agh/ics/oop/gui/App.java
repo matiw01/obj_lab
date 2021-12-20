@@ -2,25 +2,16 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Thread.sleep;
@@ -152,33 +143,34 @@ public class App extends Application {
         LineChart<Integer, Integer> flippedLineChart1 = flippedChartManitainer1.createChart();
         ChartMaintainer flippedChartManitainer2 = new ChartMaintainer("epoh", "",false,false,true,false,false);
         LineChart<Integer, Integer> flippedLineChart2 = flippedChartManitainer2.createChart();
-        flippedEngine.addObserver(flippedChartManitainer1);
-        flippedEngine.addObserver(flippedChartManitainer2);
+        flippedEngine.addEngineObserver(flippedChartManitainer1);
+        flippedEngine.addEngineObserver(flippedChartManitainer2);
 
         //fliped floppa info
         TabelMaintainer flipedTableMaintainer = new TabelMaintainer();
         TableView flippedTable =flipedTableMaintainer.createTable();
-        flippedEngine.addObserver(flipedTableMaintainer);
+        flippedEngine.addEngineObserver(flipedTableMaintainer);
 
         //rectangular chart
         ChartMaintainer rectangularChartMaintainer = new ChartMaintainer("epoh","",true,true,false,true,true);
         LineChart<Integer, Integer> rectanularLineChart1 = rectangularChartMaintainer.createChart();
         ChartMaintainer rectangularChartManitainer2 = new ChartMaintainer("epoh", "",false,false,true,false,false);
         LineChart<Integer, Integer> rectangularLineChart2 = rectangularChartManitainer2.createChart();
-        rectangularEngine.addObserver(rectangularChartMaintainer);
-        rectangularEngine.addObserver(rectangularChartManitainer2);
+        rectangularEngine.addEngineObserver(rectangularChartMaintainer);
+        rectangularEngine.addEngineObserver(rectangularChartManitainer2);
 
 
         //rectangular floppa info
         TabelMaintainer recangularTableMaintainer = new TabelMaintainer();
         TableView rectangularTable = recangularTableMaintainer.createTable();
-        rectangularEngine.addObserver(recangularTableMaintainer);
+        rectangularEngine.addEngineObserver(recangularTableMaintainer);
 
         //statistics handler
         StatisticsHandler flippedStatisticsHandler = new StatisticsHandler();
         StatisticsHandler rectangularStatisticsHandler = new StatisticsHandler();
-        flippedEngine.addObserver((IEngineObserver) flippedStatisticsHandler);
-        rectangularEngine.addObserver((IEngineObserver) rectangularStatisticsHandler);
+        flippedEngine.addEngineObserver((IEngineObserver) flippedStatisticsHandler);
+        rectangularEngine.addEngineObserver((IEngineObserver) rectangularStatisticsHandler);
+
         //buttons for saveing statistics
         Button flippedStatisticsButton = new Button("Save Statistics");
         flippedStatisticsButton.setOnAction(event -> {
@@ -225,13 +217,15 @@ public class App extends Application {
                 rectangularGridCreator.updateGrid(rectangularEngine.getEpoch());
             }
         });
+
+
         HBox flippedControlButtons = new HBox(flippedStatisticsButton, flippedToggleButon);
 
         HBox recangularControlButtons = new HBox(rectangularStatisticsButton, rectangularToggleButon);
         flippedgridCreator.updateGrid(0);
         rectangularGridCreator.updateGrid(0);
-        flippedEngine.addObserver(flippedgridCreator);
-        rectangularEngine.addObserver(rectangularGridCreator);
+        flippedEngine.addEngineObserver(flippedgridCreator);
+        rectangularEngine.addEngineObserver(rectangularGridCreator);
         HBox flippedChartBox = new HBox(flippedLineChart1,flippedLineChart2);
         flippedChartBox.setMaxWidth(1000);
         VBox flipedVBox = new VBox(flippedGrid, flippedControlButtons, flippedTable,  flippedChartBox);
@@ -246,6 +240,11 @@ public class App extends Application {
         simulationStage.setFullScreen(true);
         simulationStage.show();
 
+        //alert handlers
+        AlertHandler flippedAlertHandler = new AlertHandler(simulationStage);
+        AlertHandler rectangularAlertHandler = new AlertHandler(simulationStage);
+        flippedEngine.addMagicEvolutionObserver(flippedAlertHandler);
+        rectangularEngine.addMagicEvolutionObserver(rectangularAlertHandler);
 
     }
 }

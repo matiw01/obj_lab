@@ -25,7 +25,6 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         this.upperRight = new Vector2d(width -1, height -1);
         this.jungleLowerLeft = new Vector2d((int) (width/2-(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2-(height/2)*Math.sqrt((double) jungleRatio/100)));
         this.jungleUpperRight = new Vector2d((int) (width/2+(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2+(height/2)*Math.sqrt((double) jungleRatio/100)));
-
 //        System.out.println(lowerLeft);
 //        System.out.println(upperRight);
 //        System.out.println(jungleLowerLeft);

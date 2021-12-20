@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GridCreator implements IEngineObserver {
 
-    Image animalImg = new Image("floppa1.jpg");
+    Image animalImg = new Image("floppa in the bath.jpg");
     Image grassImg = new Image("grass.jpg");
     AtomicBoolean running;
     SimulationEngine engine;
@@ -130,12 +130,12 @@ public class GridCreator implements IEngineObserver {
                 }
             }
         }
-        grid.add(new Label("grass number"),11,6);
-        grid.add(new Label(map.getGrassNum().toString()),11,7);
-        grid.add(new Label("animals number"),11,8);
-        grid.add(new Label(engine.getAnimalsNum().toString()),11,9);
-        grid.add(new Label("epoch"), 11, 10);
-        grid.add(new Label(epoch.toString()),11,11);
+//        grid.add(new Label("grass number"),11,6);
+//        grid.add(new Label(map.getGrassNum().toString()),11,7);
+//        grid.add(new Label("animals number"),11,8);
+//        grid.add(new Label(engine.getAnimalsNum().toString()),11,9);
+//        grid.add(new Label("epoch"), 11, 10);
+//        grid.add(new Label(epoch.toString()),11,11);
         grid.setGridLinesVisible(true);
     }
 

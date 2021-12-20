@@ -112,7 +112,7 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
     void removePositionObserver(IPositionChangedObserver observer){observers.remove(observer);}
     void addAnimalObserver(IAnimalObserver animalObserver){this.animalObserver = animalObserver;}
     void removeAnimalObserver(){this.animalObserver = null;}
-    public boolean goesOutsiedeMap(Vector2d newPosition, Vector2d lowerLeft, Vector2d upperRight){return newPosition.x == upperRight.x+1 || newPosition.x == lowerLeft.x-1 || newPosition.y == lowerLeft.y-1 || newPosition.y == upperRight.x+1;}
+    public boolean goesOutsiedeMap(Vector2d newPosition, Vector2d lowerLeft, Vector2d upperRight){return newPosition.x == upperRight.x+1 || newPosition.x == lowerLeft.x-1 || newPosition.y == lowerLeft.y-1 || newPosition.y == upperRight.y+1;}
     private Vector2d validateMove(Vector2d newPosition, Vector2d lowerLeft, Vector2d upperRight) {
         if (goesOutsiedeMap(newPosition, lowerLeft, upperRight)) {
             if (newPosition.x > upperRight.x){

@@ -25,11 +25,13 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     boolean shouldRun = false;
     List<Integer[]> statistics = new ArrayList<>();
     private final List<IEngineObserver> engineObservers;
+    private final List<IMagicEvolutionObserver> magicEvolutionObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
     public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy, boolean magicStrategy){
         this.avgEnergy = startEnergy;
         this.magicStrategy = magicStrategy;
-        this.engineObservers = new ArrayList<IEngineObserver>();
+        this.engineObservers = new ArrayList<>();
+        this.magicEvolutionObservers = new ArrayList<>();
         this.moveEnergy = moveEnergy;
         this.animalsNum = animalsNum;
         this.startEnergy = startEnergy;
@@ -53,6 +55,7 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     public void run(){
             while (true) {
                 if (shouldRun) {
+                if (animalsList.size() == 5 && magicStrategy && magicCounter > 0){magicEvlution();}
                 epoch += 1;
                 removeDeadAnimals();
                 map.animalsEat();
@@ -68,7 +71,7 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
                 statistics.add(new Integer[]{map.getGrassNum(), map.getNumberOfAnimals()});
             }
                 try {
-                    engineSleep(50);
+                    engineSleep(30);
                 }catch (InterruptedException ex){
                     System.out.println(ex);
                 }
@@ -99,9 +102,12 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
             avgLifeLenght = sumOfYearsLived/numOfDeadAnimals;
         }
     }
-    public void addObserver(IEngineObserver engineObserver){
+    public void addEngineObserver(IEngineObserver engineObserver){
         this.engineObservers.add(engineObserver);
 //        System.out.println(engineObservers);
+    }
+    public void addMagicEvolutionObserver(IMagicEvolutionObserver evolutionObserver){
+        this.magicEvolutionObservers.add(evolutionObserver);
     }
     @Override
     public void animalAdded(Animal animal) {
@@ -139,21 +145,24 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     public int getEpoch(){return this.epoch;}
 
     private void magicEvlution(){
-            magicCounter -= 1;
-            List<Vector2d> freePositions = new ArrayList<>();
-            for (int i = 0; i <= upperRight.x; i++) {
-                for (int j = 0; j <= upperRight.y; j++) {
-                    Vector2d position = new Vector2d(i, j);
-                    if (!map.isOccupied(position)) {
-                        freePositions.add(position);
-                    }
+        magicCounter -= 1;
+        for (IMagicEvolutionObserver observer : magicEvolutionObservers){
+            observer.magicEvolutionHappend(this.magicCounter);
+        }
+        List<Vector2d> freePositions = new ArrayList<>();
+        for (int i = 0; i <= upperRight.x; i++) {
+            for (int j = 0; j <= upperRight.y; j++) {
+                Vector2d position = new Vector2d(i, j);
+                if (!map.isOccupied(position)) {
+                    freePositions.add(position);
                 }
             }
-            Collections.shuffle(freePositions);
-            for (int i = 0; i < 5; i++) {
-                Animal animal = new Animal(map, freePositions.get(i), animalsList.get(i).getGenotype(), startEnergy, startEnergy / 2, moveEnergy);
-                animalsList.add(animal);
-                map.place(animal);
-            }
+        }
+        Collections.shuffle(freePositions);
+        for (int i = 0; i < 5; i++) {
+            Animal animal = new Animal(map, freePositions.get(i), animalsList.get(i).getGenotype(), startEnergy, startEnergy / 2, moveEnergy);
+            animalsList.add(animal);
+            map.place(animal);
+        }
     }
 }
