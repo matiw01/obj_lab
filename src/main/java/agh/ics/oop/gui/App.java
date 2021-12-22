@@ -10,10 +10,12 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.lang.Thread.getDefaultUncaughtExceptionHandler;
 import static java.lang.Thread.sleep;
 
 public class App extends Application {
@@ -208,6 +210,7 @@ public class App extends Application {
                 flippedgridCreator.updateGrid(flippedEngine.getEpoch());
             }
         });
+
         //togle button starting and stoping rectangularMap
         ToggleButton rectangularToggleButon = new ToggleButton("start");
         rectangularToggleButon.setOnAction(event -> {
@@ -218,8 +221,16 @@ public class App extends Application {
             }
         });
 
+        //to be continued
+        Button flippedHighlightDominant = new Button("Show Dominant");
+        flippedHighlightDominant.setOnAction(event -> {
+            if(!flippedEngine.getShouldRun()){
+                flippedEngine.updateDominantAnimals();
+                flippedgridCreator.updateGrid(flippedEngine.getEpoch());
+            }
+        });
 
-        HBox flippedControlButtons = new HBox(flippedStatisticsButton, flippedToggleButon);
+        HBox flippedControlButtons = new HBox(flippedStatisticsButton, flippedToggleButon, flippedHighlightDominant);
 
         HBox recangularControlButtons = new HBox(rectangularStatisticsButton, rectangularToggleButon);
         flippedgridCreator.updateGrid(0);
@@ -228,12 +239,22 @@ public class App extends Application {
         rectangularEngine.addEngineObserver(rectangularGridCreator);
         HBox flippedChartBox = new HBox(flippedLineChart1,flippedLineChart2);
         flippedChartBox.setMaxWidth(1000);
-        VBox flipedVBox = new VBox(flippedGrid, flippedControlButtons, flippedTable,  flippedChartBox);
+
+        //dominant Genotypes
+        DominantGenotypeVisualizer flippedDominantGenotypeVisualizer = new DominantGenotypeVisualizer();
+        Label flippedDominantGenotype = flippedDominantGenotypeVisualizer.createLabel();
+        flippedEngine.addGenotypeObserver(flippedDominantGenotypeVisualizer);
+
+        DominantGenotypeVisualizer rectangularDominantGenotypeVisualizer = new DominantGenotypeVisualizer();
+        Label rectangularDominantGenotype = rectangularDominantGenotypeVisualizer.createLabel();
+        rectangularEngine.addGenotypeObserver(rectangularDominantGenotypeVisualizer);
+
+        VBox flipedVBox = new VBox(flippedGrid, flippedControlButtons, flippedTable,flippedDominantGenotype , flippedChartBox);
 
         HBox rectangularChartBox = new HBox(rectanularLineChart1,rectangularLineChart2);
         rectangularChartBox.setMaxWidth(1000);
 
-        VBox rectangularVBox = new VBox(rectangularGrid, recangularControlButtons, rectangularTable, rectangularChartBox);
+        VBox rectangularVBox = new VBox(rectangularGrid, recangularControlButtons, rectangularTable, rectangularDominantGenotype, rectangularChartBox);
         HBox hBox = new HBox(flipedVBox, rectangularVBox);
         Scene scene = new Scene(hBox, 1500, 1000);
         simulationStage.setScene(scene);
@@ -246,5 +267,9 @@ public class App extends Application {
         flippedEngine.addMagicEvolutionObserver(flippedAlertHandler);
         rectangularEngine.addMagicEvolutionObserver(rectangularAlertHandler);
 
+
+        simulationStage.setOnCloseRequest((WindowEvent we) -> {
+            System.exit(0);
+        });
     }
 }

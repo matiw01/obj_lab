@@ -4,7 +4,6 @@ package agh.ics.oop;
 import agh.ics.oop.gui.App;
 import javafx.application.Application;
 
-import java.util.ArrayList;
 
 public class World {
     

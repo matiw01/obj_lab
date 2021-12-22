@@ -4,6 +4,7 @@ package agh.ics.oop;
 import javafx.application.Platform;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     private final IWorldMap map;
@@ -26,12 +27,14 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
     List<Integer[]> statistics = new ArrayList<>();
     private final List<IEngineObserver> engineObservers;
     private final List<IMagicEvolutionObserver> magicEvolutionObservers;
+    private final List<IGenotypeObserver> genotypeObservers;
     private final ArrayList<Animal> animalsList = new ArrayList<Animal>();
     public SimulationEngine(IWorldMap map, int animalsNum, Integer startEnergy, Integer moveEnergy, boolean magicStrategy){
         this.avgEnergy = startEnergy;
         this.magicStrategy = magicStrategy;
         this.engineObservers = new ArrayList<>();
         this.magicEvolutionObservers = new ArrayList<>();
+        this.genotypeObservers = new ArrayList<>();
         this.moveEnergy = moveEnergy;
         this.animalsNum = animalsNum;
         this.startEnergy = startEnergy;
@@ -68,17 +71,19 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
                 for (IEngineObserver engineObserver : engineObservers) {
                     engineObserver.stepMade(epoch, (float) map.getGrassNum(), (float)map.getNumberOfAnimals() , getAvgEnergy(), getAvgChildrenNum(), avgLifeLenght);
                 }
+                for (IGenotypeObserver genotypeObserver : genotypeObservers){
+                    genotypeObserver.dominantGenotypeUpdate(findDominantGenotype());
+                }
                 statistics.add(new Integer[]{map.getGrassNum(), map.getNumberOfAnimals()});
             }
                 try {
-                    engineSleep(30);
+                    Thread.sleep(30);
                 }catch (InterruptedException ex){
                     System.out.println(ex);
                 }
 
         }
     }
-    public void engineSleep(int len) throws InterruptedException {Thread.sleep(len);}
     public void setShouldRun(boolean shouldRun) {this.shouldRun = shouldRun;}
 
     public Vector2d getAnimalPos(int n){return animalsList.get(n).getPosition();}
@@ -102,13 +107,9 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
             avgLifeLenght = sumOfYearsLived/numOfDeadAnimals;
         }
     }
-    public void addEngineObserver(IEngineObserver engineObserver){
-        this.engineObservers.add(engineObserver);
-//        System.out.println(engineObservers);
-    }
-    public void addMagicEvolutionObserver(IMagicEvolutionObserver evolutionObserver){
-        this.magicEvolutionObservers.add(evolutionObserver);
-    }
+    public void addEngineObserver(IEngineObserver engineObserver){this.engineObservers.add(engineObserver);}
+    public void addMagicEvolutionObserver(IMagicEvolutionObserver evolutionObserver){this.magicEvolutionObservers.add(evolutionObserver);}
+    public void addGenotypeObserver(IGenotypeObserver observer){genotypeObservers.add(observer);}
     @Override
     public void animalAdded(Animal animal) {
         animalsList.add(animal);
@@ -163,6 +164,33 @@ public class SimulationEngine implements IEngine, IMapObserver, Runnable {
             Animal animal = new Animal(map, freePositions.get(i), animalsList.get(i).getGenotype(), startEnergy, startEnergy / 2, moveEnergy);
             animalsList.add(animal);
             map.place(animal);
+        }
+    }
+    private List<Integer> findDominantGenotype(){
+        HashMap<List<Integer>, AtomicInteger> animalsGenotypes = new HashMap<List<Integer>, AtomicInteger>();
+        for (Animal animal : animalsList){
+            animalsGenotypes.put(animal.getGenotype(),new AtomicInteger(0));
+        }
+        for (Animal animal : animalsList){
+            animalsGenotypes.get(animal.getGenotype()).incrementAndGet();
+        }
+        List<Integer> dominant = new ArrayList<>();
+        AtomicInteger numberOfOccurance = new AtomicInteger(0);
+        for (Animal animal : animalsList){
+            if (animalsGenotypes.get(animal.getGenotype()).get() > numberOfOccurance.get()){
+                numberOfOccurance.set(animalsGenotypes.get(animal.getGenotype()).get());
+                dominant = animal.getGenotype();
+            }
+        }
+        return dominant;
+    }
+    public void updateDominantAnimals(){
+        List<Integer> dominant = findDominantGenotype();
+        for (Animal animal : animalsList){
+            animal.setDomininat(false);
+            if (animal.getGenotype().equals(dominant)){
+                animal.setDomininat(true);
+            }
         }
     }
 }

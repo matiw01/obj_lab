@@ -7,6 +7,7 @@ import java.util.List;
 public class Animal implements IMapElement, Comparable, IAnimalObserver{
     private Integer deathEpoch;
     private final List<Animal> observatedAnimals = new ArrayList<>();
+    private boolean isDomininat;
     private IAnimalObserver animalObserver;
     public Integer age = 0;
     public Integer allchildren = 0;
@@ -23,6 +24,7 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
     private final IWorldMap map;
     private final ArrayList<IPositionChangedObserver> observers = new ArrayList<>();
     public Animal(IWorldMap map,Vector2d initialPosition,List<Integer> genotype, int energy, int procreareEnergy, Integer moveEnergy){
+        this.isDomininat = false;
         this.followed = false;
         this.moveEnergy = moveEnergy;
         this.alive = true;
@@ -99,8 +101,8 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
     public void changeFollowingStatus(){
         this.followed = !this.followed;
         if (!this.followed){
-            for (Animal observer : observatedAnimals){
-                observer.removeAnimalObserver();
+            for (Animal observerd : observatedAnimals){
+                observerd.removeAnimalObserver();
             }
             observatedAnimals.clear();
             this.childrenNumber = 0;
@@ -180,4 +182,9 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
     public void childBorn() {
         this.descendantsNumber += 1;
     }
+
+    public void setDomininat(boolean newValue){
+        this.isDomininat = newValue;
+    }
+    public boolean isDomininat(){return this.isDomininat;}
 }

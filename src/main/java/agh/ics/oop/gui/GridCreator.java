@@ -104,6 +104,14 @@ public class GridCreator implements IEngineObserver {
                             toggleFloppaButton.setPrefWidth(columnWidth);
                             toggleFloppaButton.setPrefHeight(rowWidth);
                             grid.add(toggleFloppaButton, i + 1 - lowerLeft.x, upperRight.y - j + 1);
+                            if (((Animal) object).isDomininat() && !((Animal) object).isFollowed()){
+                                ColorAdjust colorAdjust2 = new ColorAdjust();
+                                colorAdjust2.setContrast(0.2);
+                                colorAdjust2.setHue(-0.05);
+                                colorAdjust2.setBrightness(0.4);
+                                colorAdjust2.setSaturation(0.2);
+                                iv.setEffect(colorAdjust2);
+                            }
                             toggleFloppaButton.setSelected(((Animal) object).isFollowed());
                             toggleFloppaButton.setOnAction(event -> {
                                 if (toggleFloppaButton.isSelected()) {
