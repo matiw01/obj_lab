@@ -1,9 +1,11 @@
 package agh.ics.oop;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
-    protected final Map<Vector2d, List<Animal>> animalsHashMap = new HashMap<>();
+    protected final ConcurrentHashMap<Vector2d, CopyOnWriteArrayList<Animal>> animalsHashMap = new ConcurrentHashMap<>();
     protected final Map<Vector2d, Grass> grassHashMap = new HashMap<>();
     protected final List<IMapObserver> observers = new ArrayList<IMapObserver>();
     protected Vector2d lowerLeft;
@@ -31,7 +33,7 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
 //        System.out.println(jungleUpperRight);
         for (int i = lowerLeft.x; i <= upperRight.x; i++){
             for (int j = lowerLeft.y; j <= upperRight.y; j++){
-                animalsHashMap.put(new Vector2d(i,j),new ArrayList<Animal>());
+                animalsHashMap.put(new Vector2d(i,j),new CopyOnWriteArrayList<Animal>());
             }
         }
         //random grass generation

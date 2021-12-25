@@ -195,8 +195,10 @@ public class App extends Application {
         rectangularRunning = new AtomicBoolean();
         Thread flippedThread = new Thread((Runnable) flippedEngine);
         flippedThread.start();
+//        System.out.println(flippedThread.getName());
         Thread rectangularThread = new Thread((Runnable) rectangularEngine);
         rectangularThread.start();
+//        System.out.println(rectangularThread.getName());
         GridCreator flippedgridCreator = new GridCreator(flippedMap, flipedTableMaintainer, flippedEngine, flippedRunning);
         GridCreator rectangularGridCreator = new GridCreator(rectangularMap, recangularTableMaintainer, rectangularEngine, rectangularRunning);
         GridPane flippedGrid = flippedgridCreator.createGrid();
