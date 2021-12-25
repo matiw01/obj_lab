@@ -199,9 +199,9 @@ public class App extends Application {
         Thread rectangularThread = new Thread((Runnable) rectangularEngine);
         rectangularThread.start();
 //        System.out.println(rectangularThread.getName());
-        GridCreator flippedgridCreator = new GridCreator(flippedMap, flipedTableMaintainer, flippedEngine, flippedRunning);
+        GridCreator flippedGridCreator = new GridCreator(flippedMap, flipedTableMaintainer, flippedEngine, flippedRunning);
         GridCreator rectangularGridCreator = new GridCreator(rectangularMap, recangularTableMaintainer, rectangularEngine, rectangularRunning);
-        GridPane flippedGrid = flippedgridCreator.createGrid();
+        GridPane flippedGrid = flippedGridCreator.createGrid();
         GridPane rectangularGrid = rectangularGridCreator.createGrid();
         //togle button starting and stoping flipedMap
         ToggleButton flippedToggleButon = new ToggleButton("start");
@@ -209,7 +209,7 @@ public class App extends Application {
             flippedRunning.set(flippedToggleButon.isSelected());
             flippedEngine.setShouldRun(flippedToggleButon.isSelected());
             if (!flippedToggleButon.isSelected()){
-                flippedgridCreator.updateGrid(flippedEngine.getEpoch());
+                flippedGridCreator.updateGrid(flippedEngine.getEpoch());
             }
         });
 
@@ -223,21 +223,29 @@ public class App extends Application {
             }
         });
 
-        //to be continued
+        //button highiligting dominant animals
         Button flippedHighlightDominant = new Button("Show Dominant");
         flippedHighlightDominant.setOnAction(event -> {
             if(!flippedEngine.getShouldRun()){
                 flippedEngine.updateDominantAnimals();
-                flippedgridCreator.updateGrid(flippedEngine.getEpoch());
+                flippedGridCreator.updateGrid(flippedEngine.getEpoch());
+            }
+        });
+
+        Button rectangularHighlightDominant = new Button("Show Dominant");
+        rectangularHighlightDominant.setOnAction(event -> {
+            if(!rectangularEngine.getShouldRun()){
+                rectangularEngine.updateDominantAnimals();
+                rectangularGridCreator.updateGrid(rectangularEngine.getEpoch());
             }
         });
 
         HBox flippedControlButtons = new HBox(flippedStatisticsButton, flippedToggleButon, flippedHighlightDominant);
 
-        HBox recangularControlButtons = new HBox(rectangularStatisticsButton, rectangularToggleButon);
-        flippedgridCreator.updateGrid(0);
+        HBox recangularControlButtons = new HBox(rectangularStatisticsButton, rectangularToggleButon, rectangularHighlightDominant);
+        flippedGridCreator.updateGrid(0);
         rectangularGridCreator.updateGrid(0);
-        flippedEngine.addEngineObserver(flippedgridCreator);
+        flippedEngine.addEngineObserver(flippedGridCreator);
         rectangularEngine.addEngineObserver(rectangularGridCreator);
         HBox flippedChartBox = new HBox(flippedLineChart1,flippedLineChart2);
         flippedChartBox.setMaxWidth(1000);
