@@ -38,8 +38,8 @@ public class GridCreator implements IEngineObserver {
         this.running = running;
         this.engine = engine;
         this.map = map;
-        this.columnWidth = 500/Math.max(map.getMapWidth(), map.getMapHeight());
-        this.rowWidth = 500/Math.max(map.getMapWidth(), map.getMapHeight());
+        this.columnWidth = Math.max(500/Math.max(map.getMapWidth(), map.getMapHeight()),1);
+        this.rowWidth = Math.max(500/Math.max(map.getMapWidth(), map.getMapHeight()),1);
         Vector2d[] corrners = map.getCorrners();
         this.lowerLeft = corrners[0];
         this.upperRight = corrners[1];
