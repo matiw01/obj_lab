@@ -53,7 +53,7 @@ public class Animal implements IMapElement, Comparable, IAnimalObserver{
             case FOWARD_RIGHT -> this.direction = this.direction.changeDirection(1);
             case RIGHT -> this.direction = this.direction.changeDirection(2);
             case BACKWARD_RIGHT -> this.direction = this.direction.changeDirection(3);
-            case BACKWARD -> this.direction = this.direction.changeDirection(4);
+            case BACKWARD -> go(this.direction.changeDirection(4));
             case BACKWAD_LEFT -> this.direction = this.direction.changeDirection(5);
             case LEFT -> this.direction = this.direction.changeDirection(6);
             case FORWARD_LEFT -> this.direction = this.direction.changeDirection(7);
