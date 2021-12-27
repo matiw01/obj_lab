@@ -29,8 +29,8 @@ public class GridCreator implements IEngineObserver {
     Vector2d lowerLeft;
     Vector2d upperRight;
     IWorldMap map;
-    int columnWidth = 50;
-    int rowWidth = 50;
+    int columnWidth;
+    int rowWidth;
     TabelMaintainer tabelMaintainer;
     public GridCreator(IWorldMap map,TabelMaintainer tabelMaintainer, SimulationEngine engine, AtomicBoolean running){
         this.grid = new GridPane();
@@ -38,6 +38,8 @@ public class GridCreator implements IEngineObserver {
         this.running = running;
         this.engine = engine;
         this.map = map;
+        this.columnWidth = 500/Math.max(map.getMapWidth(), map.getMapHeight());
+        this.rowWidth = 500/Math.max(map.getMapWidth(), map.getMapHeight());
         Vector2d[] corrners = map.getCorrners();
         this.lowerLeft = corrners[0];
         this.upperRight = corrners[1];

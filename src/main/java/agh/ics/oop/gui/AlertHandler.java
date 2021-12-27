@@ -19,6 +19,6 @@ public class AlertHandler implements IMagicEvolutionObserver {
     public void magicEvolutionHappend(Integer magicCounter){
         Platform.runLater(() -> {
             alert.setContentText("Magic evolution used only " + magicCounter.toString() + " to go");
-            alert.show();});
+            alert.show();}); 
     }
 }

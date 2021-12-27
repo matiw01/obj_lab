@@ -21,6 +21,8 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
 
 
     public AbstractWorldMap(int width,int height, Integer plantEnergy, Integer jungleRatio){
+        this.mapWidth = width;
+        this.mapHeiht = height;
         this.jungleRatio = jungleRatio;
         this.plantEnergy = plantEnergy;
         this.lowerLeft = new Vector2d(0,0);
@@ -182,5 +184,4 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     public Integer getMoveEnergy(){return this.moveEnergy;}
     public Integer getPlantEnergy(){return this.plantEnergy;}
     public Integer getGrassNum(){return grassHashMap.size();}
-
 }

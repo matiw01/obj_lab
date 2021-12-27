@@ -243,6 +243,7 @@ public class App extends Application {
         HBox flippedControlButtons = new HBox(flippedStatisticsButton, flippedToggleButon, flippedHighlightDominant);
 
         HBox recangularControlButtons = new HBox(rectangularStatisticsButton, rectangularToggleButon, rectangularHighlightDominant);
+
         flippedGridCreator.updateGrid(0);
         rectangularGridCreator.updateGrid(0);
         flippedEngine.addEngineObserver(flippedGridCreator);
