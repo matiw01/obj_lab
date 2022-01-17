@@ -1,11 +1,21 @@
 package agh.ics.oop;
 
-public class Grass implements IMapElement{
+public class Grass implements IMapElement {
     Vector2d position;
-    public Grass(Vector2d position){
+
+    public Grass(Vector2d position) {
         this.position = position;
     }
-    public Vector2d getPosition(){return this.position;}
-    public String toString(){return "*";}
-    public boolean isAt(Vector2d position){return this.position.equals(position);}
+
+    public Vector2d getPosition() {
+        return this.position;
+    }
+
+    public String toString() {
+        return "*";
+    }
+
+    public boolean isAt(Vector2d position) {
+        return this.position.equals(position);
+    }
 }

@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
+abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver {
     protected final ConcurrentHashMap<Vector2d, CopyOnWriteArrayList<Animal>> animalsHashMap = new ConcurrentHashMap<>();
     protected final Map<Vector2d, Grass> grassHashMap = new HashMap<>();
     protected final List<IMapObserver> observers = new ArrayList<IMapObserver>();
@@ -20,22 +20,22 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     protected Vector2d jungleUpperRight;
 
 
-    public AbstractWorldMap(int width,int height, Integer plantEnergy, Integer jungleRatio){
+    public AbstractWorldMap(int width, int height, Integer plantEnergy, Integer jungleRatio) {
         this.mapWidth = width;
         this.mapHeiht = height;
         this.jungleRatio = jungleRatio;
         this.plantEnergy = plantEnergy;
-        this.lowerLeft = new Vector2d(0,0);
-        this.upperRight = new Vector2d(width -1, height -1);
-        this.jungleLowerLeft = new Vector2d((int) (width/2-(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2-(height/2)*Math.sqrt((double) jungleRatio/100)));
-        this.jungleUpperRight = new Vector2d((int) (width/2+(width/2)*Math.sqrt(((double)jungleRatio/100))), (int) (height/2+(height/2)*Math.sqrt((double) jungleRatio/100)));
+        this.lowerLeft = new Vector2d(0, 0);
+        this.upperRight = new Vector2d(width - 1, height - 1);
+        this.jungleLowerLeft = new Vector2d((int) (width / 2 - (width / 2) * Math.sqrt(((double) jungleRatio / 100))), (int) (height / 2 - (height / 2) * Math.sqrt((double) jungleRatio / 100)));
+        this.jungleUpperRight = new Vector2d((int) (width / 2 + (width / 2) * Math.sqrt(((double) jungleRatio / 100))), (int) (height / 2 + (height / 2) * Math.sqrt((double) jungleRatio / 100)));
 //        System.out.println(lowerLeft);
 //        System.out.println(upperRight);
 //        System.out.println(jungleLowerLeft);
 //        System.out.println(jungleUpperRight);
-        for (int i = lowerLeft.x; i <= upperRight.x; i++){
-            for (int j = lowerLeft.y; j <= upperRight.y; j++){
-                animalsHashMap.put(new Vector2d(i,j),new CopyOnWriteArrayList<Animal>());
+        for (int i = lowerLeft.x; i <= upperRight.x; i++) {
+            for (int j = lowerLeft.y; j <= upperRight.y; j++) {
+                animalsHashMap.put(new Vector2d(i, j), new CopyOnWriteArrayList<Animal>());
             }
         }
         //random grass generation
@@ -50,48 +50,52 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
     }
 
     public abstract Vector2d[] getCorrners();
-    public Vector2d[] getJungleCorners(){return new Vector2d[] {this.jungleLowerLeft,this.jungleUpperRight};}
+
+    public Vector2d[] getJungleCorners() {
+        return new Vector2d[]{this.jungleLowerLeft, this.jungleUpperRight};
+    }
 
 
     public boolean isOccupied(Vector2d position) {
         return (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size() > 0) || grassHashMap.containsKey(position);
     }
 
-    public boolean isGrassy(Vector2d position){return grassHashMap.containsKey(position);}
+    public boolean isGrassy(Vector2d position) {
+        return grassHashMap.containsKey(position);
+    }
 
     public boolean place(Animal animal) {
-        if (canMoveTo(animal.getPosition())){
+        if (canMoveTo(animal.getPosition())) {
 
             animalsHashMap.get(animal.getPosition()).add(animal);
             return true;
-        }
-        else throw new IllegalArgumentException("position " + animal.getPosition() + " is not available");
+        } else throw new IllegalArgumentException("position " + animal.getPosition() + " is not available");
     }
 
 
-
     public Object objectAt(Vector2d position) {
-        if (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size()>=2){
+        if (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size() >= 2) {
             return getStrongestAnimals(position)[0];
         }
-        if (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size() == 1){
+        if (animalsHashMap.containsKey(position) && animalsHashMap.get(position).size() == 1) {
             return animalsHashMap.get(position).get(0);
         }
-        if (grassHashMap.containsKey(position)){
+        if (grassHashMap.containsKey(position)) {
             return grassHashMap.get(position);
         }
         return null;
     }
 
-    public void removeDeadAnimals(){
-        for (int i = lowerLeft.x; i <= upperRight.x; i++){
-            for (int j = lowerLeft.y; j <= upperRight.y; j++){
-                if (animalsHashMap.containsKey(new Vector2d(i,j))){
-                    animalsHashMap.get(new Vector2d(i,j)).removeIf(animal -> !animal.isAlive());
+    public void removeDeadAnimals() {
+        for (int i = lowerLeft.x; i <= upperRight.x; i++) {
+            for (int j = lowerLeft.y; j <= upperRight.y; j++) {
+                if (animalsHashMap.containsKey(new Vector2d(i, j))) {
+                    animalsHashMap.get(new Vector2d(i, j)).removeIf(animal -> !animal.isAlive());
                 }
             }
         }
     }
+
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         List<Animal> animalsOnPos = animalsHashMap.get(oldPosition);
@@ -99,6 +103,7 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         List<Animal> newAnimalsOnPos = animalsHashMap.get(newPosition);
         newAnimalsOnPos.add(animal);
     }
+
     public void addGras() {
         List<Vector2d> steppePosList = new ArrayList<>();
         List<Vector2d> junglePosList = new ArrayList<>();
@@ -127,31 +132,37 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
             grassHashMap.put(jungleGrasPos, new Grass(jungleGrasPos));
         }
     }
-    public void removeGrass(Vector2d position){grassHashMap.remove(position);};
+
+    public void removeGrass(Vector2d position) {
+        grassHashMap.remove(position);
+    }
+
+    ;
 
 
-    public void animalsProcreate(){
-        for (int i = 0; i <= upperRight.x; i++){
-            for (int j = 0; j <= upperRight.y; j++){
-                if (animalsHashMap.get(new Vector2d(i,j)).size()>=2){
-                    Animal[] animals = getStrongestAnimals(new Vector2d(i,j));
-                    if (animals[0].getEnergy() >= animals[0].getProcreateEnergy() && animals[1].getEnergy() >= animals[1].getProcreateEnergy()){
-                    Animal newBorn = animals[0].procreate(animals[1]);
-                    this.place(newBorn);
-                    for(IMapObserver observer : observers) {
-                        observer.animalAdded(newBorn);
-                    }
+    public void animalsProcreate() {
+        for (int i = 0; i <= upperRight.x; i++) {
+            for (int j = 0; j <= upperRight.y; j++) {
+                if (animalsHashMap.get(new Vector2d(i, j)).size() >= 2) {
+                    Animal[] animals = getStrongestAnimals(new Vector2d(i, j));
+                    if (animals[0].getEnergy() >= animals[0].getProcreateEnergy() && animals[1].getEnergy() >= animals[1].getProcreateEnergy()) {
+                        Animal newBorn = animals[0].procreate(animals[1]);
+                        this.place(newBorn);
+                        for (IMapObserver observer : observers) {
+                            observer.animalAdded(newBorn);
+                        }
                     }
                 }
             }
         }
     }
-    public void animalsEat(){
-        for (int i = 0; i <= upperRight.x; i++){
-            for (int j = 0; j <= upperRight.y; j++){
-                Vector2d position = new Vector2d(i,j);
+
+    public void animalsEat() {
+        for (int i = 0; i <= upperRight.x; i++) {
+            for (int j = 0; j <= upperRight.y; j++) {
+                Vector2d position = new Vector2d(i, j);
                 List<Animal> animalsList = animalsHashMap.get(position);
-                if (animalsList.size()>0) {
+                if (animalsList.size() > 0) {
                     Collections.sort(animalsList);
                     animalsHashMap.get(position).get(animalsList.size() - 1).eat();
                 }
@@ -159,29 +170,52 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangedObserver{
         }
     }
 
-    private Animal[] getStrongestAnimals(Vector2d position){
+    private Animal[] getStrongestAnimals(Vector2d position) {
         List<Animal> animalsList = animalsHashMap.get(position);
         Collections.sort(animalsList);
-        return new Animal[] {animalsList.get(animalsList.size()-1), animalsList.get(animalsList.size()-2)};
+        return new Animal[]{animalsList.get(animalsList.size() - 1), animalsList.get(animalsList.size() - 2)}; // a co z losowym rozstrzyganiem remisów?
     }
 
-    public void addObserver(IMapObserver observer){observers.add(observer);}
+    public void addObserver(IMapObserver observer) {
+        observers.add(observer);
+    }
 
 
-    public Integer getMapWidth(){return this.mapWidth;}
-    public Integer getMapHeight(){return this.mapHeiht;}
-    public Integer getJungleRatio(){return this.jungleRatio;}
-    public Integer getNumberOfAnimals(){
+    public Integer getMapWidth() {
+        return this.mapWidth;
+    }
+
+    public Integer getMapHeight() {
+        return this.mapHeiht;
+    }
+
+    public Integer getJungleRatio() {
+        return this.jungleRatio;
+    }
+
+    public Integer getNumberOfAnimals() {
         Integer numOfAnimals = 0;
-        for (int i = 0; i <= upperRight.x; i++){
-            for (int j = 0; j <= upperRight.y; j++){
-                numOfAnimals += animalsHashMap.get(new Vector2d(i,j)).size();
+        for (int i = 0; i <= upperRight.x; i++) {
+            for (int j = 0; j <= upperRight.y; j++) {
+                numOfAnimals += animalsHashMap.get(new Vector2d(i, j)).size();
             }
         }
         return numOfAnimals;
     }
-    public Integer getStartEnergy(){return this.startEnergy;}
-    public Integer getMoveEnergy(){return this.moveEnergy;}
-    public Integer getPlantEnergy(){return this.plantEnergy;}
-    public Integer getGrassNum(){return grassHashMap.size();}
+
+    public Integer getStartEnergy() {
+        return this.startEnergy;
+    }
+
+    public Integer getMoveEnergy() {
+        return this.moveEnergy;
+    }
+
+    public Integer getPlantEnergy() {
+        return this.plantEnergy;
+    }
+
+    public Integer getGrassNum() {
+        return grassHashMap.size();
+    }
 }

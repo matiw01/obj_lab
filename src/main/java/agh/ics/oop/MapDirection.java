@@ -10,22 +10,24 @@ public enum MapDirection {
     WEST,
     NORTH_WEST;
 
+    private static final MapDirection[] mapDirections = values();
+
     public MapDirection changeDirection(int n) {
-        MapDirection[] mapDirections = values();
         int direcionNumber = this.ordinal() + n;
         return mapDirections[direcionNumber % mapDirections.length];
     }
 
     public MapDirection previous() {
-        MapDirection[] mapDirections = values();
         int direcionNumber = this.ordinal() - 1;
-        if(direcionNumber < 0){direcionNumber = direcionNumber+mapDirections.length;}
+        if (direcionNumber < 0) {
+            direcionNumber = direcionNumber + mapDirections.length;
+        }
         return mapDirections[direcionNumber];
     }
 
     public Vector2d toUnitVector() {
         return switch (this) {
-            case NORTH -> new Vector2d(0, 1);
+            case NORTH -> new Vector2d(0, 1);   // nowy wektor co wywołanie
             case NORTH_EAST -> new Vector2d(1, 1);
             case EAST -> new Vector2d(1, 0);
             case SOUTH_EAST -> new Vector2d(1, -1);
@@ -35,8 +37,9 @@ public enum MapDirection {
             case NORTH_WEST -> new Vector2d(-1, 1);
         };
     }
-    public String toString(){
-        return switch (this){
+
+    public String toString() {
+        return switch (this) {
             case NORTH -> "N";
             case NORTH_EAST -> "NE";
             case EAST -> "E";
