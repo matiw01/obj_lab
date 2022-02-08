@@ -12,5 +12,7 @@ Most important for the simulation is **genotype**. **Genotype** is a list of 32 
 ## Moves
 Each turn animal makes semi-random choice on what to do. It's semi-random because as stated before decision is based on animal's **genotype** and **direction**. 
 Each number means diffrent move `0` is a step `forward`, `4` is a step `backward` (based on **direction**). Other numbers are changing animal direction using forumla ``number * 45°``(animal turns right).
-
-After all animals make a move stro
+### Eating
+After all animals make a move strongest animal on each field can eat grass. Eating grass deletes grass from the field and gives animal additional energy. 
+### Procreation
+Next step is procreation when two or more animals meet on the same field they procreate. Only two strongest animals on each field can procreate. Newborn animal inherits parents genotype and gets 1/4 of theris energy(parents lose this energy). It gets part of mothers and fathers genotype. How much it gets from them depends on ratio of their energy.
